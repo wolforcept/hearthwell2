@@ -1,0 +1,97 @@
+[02Sept2022 16:34:34.706] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgeserveruserdev, --gameDir, ., --fml.forgeVersion, 40.1.16, --fml.mcVersion, 1.18.2, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20220404.173914]
+[02Sept2022 16:34:34.710] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 9.1.3+9.1.3+main.9b69c82a starting: java version 18.0.1 by Oracle Corporation
+[02Sept2022 16:34:34.819] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/C:/Users/Miguel/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%2322!/ Service=ModLauncher Env=SERVER
+[02Sept2022 16:34:36.474] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgeserveruserdev' with arguments [--gameDir, .]
+[02Sept2022 16:34:45.294] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 40.1.16, for MC 1.18.2 with MCP 20220404.173914
+[02Sept2022 16:34:45.295] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v40.1.16 Initialized
+[02Sept2022 16:34:47.380] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Starting version check at https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json
+[02Sept2022 16:34:48.706] [Forge Version Check/INFO] [net.minecraftforge.fml.VersionChecker/]: [forge] Found status: OUTDATED Current: 40.1.16 Target: 40.1.74
+[02Sept2022 16:34:48.925] [main/INFO] [com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService/]: Environment: authHost='https://authserver.mojang.com', accountsHost='https://api.mojang.com', sessionHost='https://sessionserver.mojang.com', servicesHost='https://api.minecraftservices.com', name='PROD'
+[02Sept2022 16:34:50.673] [main/WARN] [net.minecraft.server.packs.VanillaPackResources/]: Assets URL 'union:/C:/repos/Hearthwell2/build/fg_cache/net/minecraftforge/forge/1.18.2-40.1.16_mapped_official_1.18.2/forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/assets/.mcassetsroot' uses unexpected schema
+[02Sept2022 16:34:50.675] [main/WARN] [net.minecraft.server.packs.VanillaPackResources/]: Assets URL 'union:/C:/repos/Hearthwell2/build/fg_cache/net/minecraftforge/forge/1.18.2-40.1.16_mapped_official_1.18.2/forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/data/.mcassetsroot' uses unexpected schema
+[02Sept2022 16:34:55.065] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[02Sept2022 16:34:55.068] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[02Sept2022 16:34:55.085] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[02Sept2022 16:34:55.088] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[02Sept2022 16:34:55.090] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[02Sept2022 16:34:58.683] [Worker-Main-21/INFO] [net.minecraft.world.item.crafting.RecipeManager/]: Loaded 7 recipes
+[02Sept2022 16:35:00.360] [Worker-Main-21/INFO] [net.minecraft.advancements.AdvancementList/]: Loaded 1141 advancements
+[02Sept2022 16:35:00.552] [main/ERROR] [net.minecraft.world.level.levelgen.WorldGenSettings/]: No key layers in MapLike[{}]; Not a registry ops
+[02Sept2022 16:35:00.927] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting minecraft server version 1.18.2
+[02Sept2022 16:35:00.928] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Loading properties
+[02Sept2022 16:35:00.928] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Default game type: SURVIVAL
+[02Sept2022 16:35:00.928] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Generating keypair
+[02Sept2022 16:35:00.963] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting Minecraft server on *:25565
+[02Sept2022 16:35:00.980] [Server thread/INFO] [net.minecraft.server.network.ServerConnectionListener/]: Using default channel type
+[02Sept2022 16:35:01.103] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+[02Sept2022 16:35:01.103] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: The server will make no attempt to authenticate usernames. Beware.
+[02Sept2022 16:35:01.103] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+[02Sept2022 16:35:01.103] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: To change this, set "online-mode" to "true" in the server.properties file.
+[02Sept2022 16:35:01.166] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Preparing level "world"
+[02Sept2022 16:35:01.435] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
+[02Sept2022 16:35:01.847] [Worker-Main-36/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 0%
+[02Sept2022 16:35:02.007] [Worker-Main-35/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 0%
+[02Sept2022 16:35:02.436] [Worker-Main-23/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 0%
+[02Sept2022 16:35:02.936] [Worker-Main-32/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 0%
+[02Sept2022 16:35:03.436] [Worker-Main-32/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 45%
+[02Sept2022 16:35:03.955] [Worker-Main-25/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 93%
+[02Sept2022 16:35:03.965] [Server thread/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Time elapsed: 2530 ms
+[02Sept2022 16:35:03.965] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Done (2.850s)! For help, type "help"
+[02Sept2022 16:35:03.977] [Server thread/INFO] [net.minecraftforge.gametest.ForgeGameTestHooks/]: Enabled Gametest Namespaces: [hearthwell]
+[02Sept2022 16:35:03.989] [Server thread/INFO] [net.minecraftforge.server.permission.PermissionAPI/]: Successfully initialized permission handler forge:default_handler
+[02Sept2022 16:35:10.561] [Server thread/INFO] [net.minecraftforge.common.AdvancementLoadFix/]: Using new advancement loading for net.minecraft.server.PlayerAdvancements@2dfd896a
+[02Sept2022 16:35:10.569] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: Wolforce[/127.0.0.1:49961] logged in with entity id 178 at (-0.5, 91.0, 7.5)
+[02Sept2022 16:35:10.614] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Wolforce joined the game
+[02Sept2022 16:35:23.952] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Made Wolforce a server operator
+[02Sept2022 16:35:26.908] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: [Wolforce: Set own game mode to Creative Mode]
+[02Sept2022 16:35:52.504] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: [Wolforce: Teleported Wolforce to 10000.500000, 100.000000, 10000.500000]
+[02Sept2022 16:36:05.239] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: [Wolforce: Teleported Wolforce to 0.500000, 200.000000, 0.500000]
+[02Sept2022 16:36:05.239] [Server thread/WARN] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Wolforce moved too quickly! -10002.048529525724,79.3863364643701,-9980.090681376148
+[02Sept2022 16:36:23.609] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: [Wolforce: Successfully filled 216 blocks]
+[02Sept2022 16:37:26.959] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: [Wolforce: Set own game mode to Survival Mode]
+[02Sept2022 16:37:36.822] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: [Wolforce: Gave 1 [Hearth Well Prayer Letter] to Wolforce]
+[02Sept2022 16:38:26.398] [Server thread/FATAL] [net.minecraftforge.fml.loading.RuntimeDistCleaner/DISTXFORM]: Attempted to load class net/minecraft/client/particle/ParticleRenderType for invalid dist DEDICATED_SERVER
+[02Sept2022 16:38:26.468] [Server thread/ERROR] [net.minecraft.server.MinecraftServer/]: Encountered an unexpected exception
+net.minecraft.ReportedException: Ticking entity
+	at net.minecraft.server.MinecraftServer.tickChildren(MinecraftServer.java:906) ~[forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/:?]
+	at net.minecraft.server.dedicated.DedicatedServer.tickChildren(DedicatedServer.java:326) ~[forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/:?]
+	at net.minecraft.server.MinecraftServer.tickServer(MinecraftServer.java:842) ~[forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/:?]
+	at net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:685) ~[forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/:?]
+	at net.minecraft.server.MinecraftServer.lambda$spin$2(MinecraftServer.java:261) ~[forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/:?]
+	at java.lang.Thread.run(Thread.java:833) [?:?]
+Caused by: java.lang.RuntimeException: Attempted to load class net/minecraft/client/particle/ParticleRenderType for invalid dist DEDICATED_SERVER
+	at net.minecraftforge.fml.loading.RuntimeDistCleaner.processClassWithFlags(RuntimeDistCleaner.java:57) ~[fmlloader-1.18.2-40.1.16.jar:1.0]
+	at cpw.mods.modlauncher.LaunchPluginHandler.offerClassNodeToPlugins(LaunchPluginHandler.java:88) ~[modlauncher-9.1.3.jar:?]
+	at cpw.mods.modlauncher.ClassTransformer.transform(ClassTransformer.java:120) ~[modlauncher-9.1.3.jar:?]
+	at cpw.mods.modlauncher.TransformingClassLoader.maybeTransformClassBytes(TransformingClassLoader.java:50) ~[modlauncher-9.1.3.jar:?]
+	at cpw.mods.cl.ModuleClassLoader.readerToClass(ModuleClassLoader.java:110) ~[securejarhandler-1.0.3.jar:?]
+	at cpw.mods.cl.ModuleClassLoader.lambda$findClass$16(ModuleClassLoader.java:216) ~[securejarhandler-1.0.3.jar:?]
+	at cpw.mods.cl.ModuleClassLoader.loadFromModule(ModuleClassLoader.java:226) ~[securejarhandler-1.0.3.jar:?]
+	at cpw.mods.cl.ModuleClassLoader.findClass(ModuleClassLoader.java:216) ~[securejarhandler-1.0.3.jar:?]
+	at cpw.mods.cl.ModuleClassLoader.loadClass(ModuleClassLoader.java:132) ~[securejarhandler-1.0.3.jar:?]
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:521) ~[?:?]
+	at wolforce.hearthwell.particles.ParticleEnergyData.<init>(ParticleEnergyData.java:34) ~[%2380!/:?]
+	at wolforce.hearthwell.entities.EntityHearthWell.addResearch(EntityHearthWell.java:366) ~[%2380!/:?]
+	at wolforce.hearthwell.entities.EntityHearthWell.tickResearch(EntityHearthWell.java:222) ~[%2380!/:?]
+	at wolforce.hearthwell.entities.EntityHearthWell.tick(EntityHearthWell.java:164) ~[%2380!/:?]
+	at net.minecraft.server.level.ServerLevel.tickNonPassenger(ServerLevel.java:652) ~[forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/:?]
+	at net.minecraft.world.level.Level.guardEntityTick(Level.java:486) ~[forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/:?]
+	at net.minecraft.server.level.ServerLevel.lambda$tick$3(ServerLevel.java:319) ~[forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/:?]
+	at net.minecraft.world.level.entity.EntityTickList.forEach(EntityTickList.java:54) ~[forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/:?]
+	at net.minecraft.server.level.ServerLevel.tick(ServerLevel.java:299) ~[forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/:?]
+	at net.minecraft.server.MinecraftServer.tickChildren(MinecraftServer.java:902) ~[forge-1.18.2-40.1.16_mapped_official_1.18.2-recomp.jar%2376!/:?]
+	... 5 more
+[02Sept2022 16:38:26.479] [Server thread/FATAL] [net.minecraftforge.common.ForgeMod/]: Preparing crash report with UUID 7baffc3e-690b-45cf-8c4b-78a0e16690d7
+[02Sept2022 16:38:26.480] [Server thread/ERROR] [net.minecraft.server.MinecraftServer/]: This crash report has been saved to: C:\repos\Hearthwell2\run_server\.\crash-reports\crash-2022-09-02_16.38.26-server.txt
+[02Sept2022 16:38:26.480] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Stopping server
+[02Sept2022 16:38:26.481] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving players
+[02Sept2022 16:38:26.496] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: Wolforce lost connection: Server closed
+[02Sept2022 16:38:26.497] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Wolforce left the game
+[02Sept2022 16:38:26.502] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving worlds
+[02Sept2022 16:38:27.130] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+[02Sept2022 16:38:27.277] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+[02Sept2022 16:38:27.278] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+[02Sept2022 16:38:27.289] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[02Sept2022 16:38:27.289] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[02Sept2022 16:38:27.289] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[02Sept2022 16:38:27.289] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage: All dimensions are saved

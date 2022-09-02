@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" D ",
+		"DAD",
+		"ACA"
+	],
+	"key": {
+		"A": {
+			"item": "hearthwell:myst_ingot"
+		},
+		"C": {
+			"item": "hearthwell:crystal"
+		},
+		"D": {
+			"item": "hearthwell:myst_dust"
+		}
+	},
+	"result": {
+		"item": "hearthwell:spire"
+	}
+}

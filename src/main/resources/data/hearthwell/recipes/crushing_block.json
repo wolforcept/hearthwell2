@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"CCC",
+		"CCC",
+		"III"
+	],
+	"key": {
+		"C": {
+			"item": "minecraft:blackstone"
+		},
+		"I": {
+			"item": "hearthwell:myst_ingot"
+		}
+	},
+	"result": {
+		"item": "hearthwell:crushing_block"
+	}
+}

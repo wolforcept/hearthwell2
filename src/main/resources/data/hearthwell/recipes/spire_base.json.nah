@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"AAA",
+		"ABA",
+		"AAA"
+	],
+	"key": {
+		"A": {
+			"item": "hearthwell:myst_ingot"
+		},
+		"B": {
+			"item": "hearthwell:token_5"
+		}
+	},
+	"result": {
+		"item": "hearthwell:spire_base"
+	}
+}

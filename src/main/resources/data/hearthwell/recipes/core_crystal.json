@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"AAA",
+		"ACA",
+		"ALA"
+	],
+	"key": {
+		"A": {
+			"item": "minecraft:glass"
+		},
+		"C": {
+			"item": "hearthwell:crystal_cyan"
+		},
+		"L": {
+			"item": "minecraft:lapis_block"
+		}
+	},
+	"result": {
+		"item": "hearthwell:core_crystal"
+	}
+}

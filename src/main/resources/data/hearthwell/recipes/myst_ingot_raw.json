@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" BA",
+		"BCB",
+		"AB "
+	],
+	"key": {
+		"A": {
+			"item": "hearthwell:petrified_wood_chunk"
+		},
+		"B": {
+			"item": "hearthwell:myst_dust"
+		},
+		"C": {
+			"item": "hearthwell:crystal"
+		}
+	},
+	"result": {
+		"item": "hearthwell:myst_ingot_raw"
+	}
+}

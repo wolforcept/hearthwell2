@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" C ",
+		"BIB",
+		"IAI"
+	],
+	"key": {
+		"A": {
+			"item": "hearthwell:myst_container"
+		},
+		"B": {
+			"item": "minecraft:polished_blackstone"
+		},
+		"I": {
+			"item": "hearthwell:myst_ingot"
+		},
+		"C": {
+			"item": "hearthwell:crystal_red"
+		}
+	},
+	"result": {
+		"item": "hearthwell:spire_device_reactor"
+	}
+}

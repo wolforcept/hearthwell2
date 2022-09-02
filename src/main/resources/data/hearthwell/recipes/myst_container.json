@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"CCC",
+		"ABA",
+		"CCC"
+	],
+	"key": {
+		"A": {
+			"item": "hearthwell:myst_ingot"
+		},
+		"B": {
+			"tag": "hearthwell:crystals"
+		},
+		"C": {
+			"item": "minecraft:polished_blackstone_slab"
+		}
+	},
+	"result": {
+		"item": "hearthwell:myst_container"
+	}
+}

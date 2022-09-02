@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"BAB",
+		" I ",
+		"ICI"
+	],
+	"key": {
+		"A": {
+			"item": "hearthwell:myst_container"
+		},
+		"B": {
+			"item": "minecraft:polished_blackstone_slab"
+		},
+		"I": {
+			"item": "hearthwell:myst_ingot"
+		},
+		"C": {
+			"item": "hearthwell:crystal_blue"
+		}
+	},
+	"result": {
+		"item": "hearthwell:spire_device_core_turning"
+	}
+}
