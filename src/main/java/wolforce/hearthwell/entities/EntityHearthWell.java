@@ -17,6 +17,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -30,6 +32,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import wolforce.hearthwell.HearthWell;
+import wolforce.hearthwell.data.MapData;
 import wolforce.hearthwell.data.MapNode;
 import wolforce.hearthwell.data.RecipePart;
 import wolforce.hearthwell.data.recipes.RecipeFlare;
@@ -42,7 +45,7 @@ import wolforce.utils.stacks.UtilItemStack;
 
 public class EntityHearthWell extends Entity {
 
-	public static final String REG_ID = "entity_hearth_well";
+	public static final String REG_ID = "hearthwell";
 
 	private static final EntityDataAccessor<Integer> RESEARCH = SynchedEntityData.defineId(EntityHearthWell.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Byte> RESEARCH_NODE_X = SynchedEntityData.defineId(EntityHearthWell.class, EntityDataSerializers.BYTE);
@@ -66,13 +69,14 @@ public class EntityHearthWell extends Entity {
 	//
 
 	private void init() {
-
-		unlockMapNode(DATA.getNode((byte) 0, (byte) 0));
+		unlockMapNode(DATA().getNode((byte) 0, (byte) 0));
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
+
+		MapData DATA = DATA();
 
 		Vec3 realPos = position();
 		Vec3 centerPos = position().add(0, 0.65f, 0);
@@ -123,15 +127,13 @@ public class EntityHearthWell extends Entity {
 
 		if (!level.isClientSide) {
 
-			CompoundTag unlockedNodes = getUnlockedNodes();
-
 			if (!nearItemsGood.isEmpty() && level instanceof ServerLevel && random.nextFloat() < 0.025) {
 
 				for (RecipeFlare recipe : DATA.recipes_flare) {
 					if (!recipe.isUnlocked(this))
 						continue;
 
-//					int[] matchesResult = recipe.matches(nearItemsGood.stream().map(e -> e.getItem()).collect(toList()));
+//					int[] matchesResult = recipe.ematches(nearItemsGood.stream().map(e -> e.getItem()).collect(toList()));
 //					int matches = matchesResult[0];
 //					int nrOfMystDust = matchesResult[1];
 					boolean matches = recipe.matchesAllInputs(nearItemsGood.stream().map(e -> e.getItem()).toList());
@@ -152,9 +154,10 @@ public class EntityHearthWell extends Entity {
 						if (flarePos == null)
 							flarePos = new Vec3(x, y + 1, z);
 						EntityFlare flareEntity = new EntityFlare(level);
-						flareEntity.set(recipe.recipeId, DATA.recipes_flare.indexOf(recipe), /* uses */ (byte) Math.min(64, recipe.uses + extraDust), unlockedNodes);
+						flareEntity.set(uuid, recipe.recipeId, DATA.recipes_flare.indexOf(recipe), /* uses */ (byte) Math.min(64, recipe.initial_uses + extraDust));
 						flareEntity.setRealPosition(flarePos.x, flarePos.y, flarePos.z);
 						level.addFreshEntity(flareEntity);
+						this.level.playSound((Player) null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 10000.0F, 1);
 					}
 				}
 			}
@@ -165,7 +168,7 @@ public class EntityHearthWell extends Entity {
 			else
 				setHasItems(true);
 			if (Math.random() < 0.1)
-				tickTransformationRecipes();
+				tickTransformationRecipes(DATA);
 
 		} else { // CLIENT SIDE
 			level.addParticle(new ParticleEnergyData(), x, y + .75 + random.nextGaussian() * .1, z,
@@ -192,7 +195,7 @@ public class EntityHearthWell extends Entity {
 		return null;
 	}
 
-	private void tickTransformationRecipes() {
+	private void tickTransformationRecipes(MapData DATA) {
 		BlockPos pos = blockPosition().offset(//
 				Math.max(-2, Math.min(2, random.nextGaussian())), //
 				Math.max(-3, Math.min(3, random.nextGaussian())), //
@@ -204,8 +207,18 @@ public class EntityHearthWell extends Entity {
 		for (RecipeInfluence recipe : DATA.recipes_influence) {
 			if (recipe.isUnlocked(this) && recipe.matches(block)) {
 				Block outputBlock = recipe.getRandomOuputBlock();
-				if (outputBlock != null)
+				if (outputBlock != null) {
 					level.setBlockAndUpdate(pos, outputBlock.defaultBlockState());
+					System.out.println(outputBlock);
+					level.playSound((Player) null, blockPosition(), SoundEvents.BELL_RESONATE, SoundSource.BLOCKS, 10.0F, (float) (4 + Math.random()));
+					if (level instanceof ServerLevel serverLevel)
+						serverLevel.sendParticles(new ParticleEnergyData(), //
+								pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, // position
+								20, // particleCount
+								random.nextGaussian() * .1, random.nextGaussian() * .1, random.nextGaussian() * .1, // offset
+								0.02 // speed
+						);
+				}
 				return;
 			}
 		}
@@ -271,7 +284,7 @@ public class EntityHearthWell extends Entity {
 		return false;
 	}
 
-	private CompoundTag getUnlockedNodes() {
+	public CompoundTag getUnlockedNodes() {
 		return entityData.get(UNLOCKED_NODES);
 	}
 
@@ -296,7 +309,7 @@ public class EntityHearthWell extends Entity {
 
 	public boolean isUnlockable(MapNode node) {
 		for (String parent : node.parent_ids) {
-			if (!isUnlocked(DATA.getNode(parent)))
+			if (!isUnlocked(DATA().getNode(parent)))
 				return false;
 		}
 		return true;
@@ -346,7 +359,7 @@ public class EntityHearthWell extends Entity {
 	}
 
 	public double getResearchPercent() {
-		return getResearch() / (double) DATA.getNode(getResearchNode()).time;
+		return getResearch() / (double) DATA().getNode(getResearchNode()).time;
 	}
 
 	public byte[] getResearchNode() {
@@ -354,7 +367,7 @@ public class EntityHearthWell extends Entity {
 	}
 
 	private boolean addResearch(int value) {
-		MapNode node = DATA.getNode(getResearchNode());
+		MapNode node = DATA().getNode(getResearchNode());
 		if (node == null)
 			return false;
 		int newValue = getResearch() + value;
@@ -364,6 +377,7 @@ public class EntityHearthWell extends Entity {
 			if (!level.isClientSide && level instanceof ServerLevel) {
 				Vec3 pos = position();
 				((ServerLevel) level).sendParticles(new ParticleEnergyData(), pos.x, pos.y + 0.66, pos.z, 240, 0, 0, 0, 0.1);
+				level.playSound((Player) null, blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 10000.0F, 1);
 			}
 			return true;
 		}
@@ -374,7 +388,7 @@ public class EntityHearthWell extends Entity {
 		byte[] currNode = getResearchNode();
 		if (x == currNode[0] && y == currNode[1])
 			return;
-		MapNode node = DATA.getNode(x, y);
+		MapNode node = DATA().getNode(x, y);
 		if (x == 0 && y == 0) {
 			entityData.set(RESEARCH, 0);
 			research_cooldown = research_max_cooldown;
@@ -415,7 +429,7 @@ public class EntityHearthWell extends Entity {
 		entityData.set(RESEARCH, compound.getInt("research"));
 		byte research_node_x = compound.getByte("research_node_x");
 		byte research_node_y = compound.getByte("research_node_y");
-		if (DATA.getNode(research_node_x, research_node_y) != null) {
+		if (DATA().getNode(research_node_x, research_node_y) != null) {
 			entityData.set(RESEARCH_NODE_X, research_node_x);
 			entityData.set(RESEARCH_NODE_Y, research_node_y);
 		} else {

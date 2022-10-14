@@ -1,7 +1,7 @@
 {
-	"parent": "hearthwell:block/core",
+	"parent": "hearthwell:block/core_activated",
 	"textures": {
-		"all": "hearthwell:blocks/core_soft_activated",
-		"particle": "hearthwell:blocks/core_soft_activated"
+		"all": "hearthwell:blocks/core_soft",
+		"particle": "hearthwell:blocks/core_soft"
 	}
 }

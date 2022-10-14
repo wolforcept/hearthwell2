@@ -20,6 +20,12 @@ import wolforce.utils.stacks.UtilItemStack;
 
 public class BeBurstSeed extends BlockEntityParent {
 
+	private static final float CHAOS_LINE = .3f;
+
+	private static boolean willBurst(float chaos, int count) {
+		return count >= 4 && chaos > CHAOS_LINE && Math.random() < (chaos - CHAOS_LINE) / 2;
+	}
+
 	private ItemStackHandler inv;
 	private float chaos = 0;
 
@@ -31,18 +37,20 @@ public class BeBurstSeed extends BlockEntityParent {
 	public void tick(Level level, BlockPos pos, BlockState blockState) {
 
 		if (chaos > 0) {
-			chaos *= .99;
+			chaos *= .995;
 			chaos -= .00005;// + Math.max(0, 1 - chaos);
 		}
+
 		if (chaos < .001)
 			chaos = 0;
 
 		if (level.isClientSide)
 			return;
 
-		if (getItem().getCount() >= 4 && Math.random() < getChaos() / 25) {
+		if (willBurst(getChaos(), getItem().getCount())) {
 			burst(pos);
 		}
+
 	}
 
 	private void burst(BlockPos pos) {
@@ -77,14 +85,12 @@ public class BeBurstSeed extends BlockEntityParent {
 				}
 			};
 			entity.setDefaultPickUpDelay();
-			entity.setDeltaMovement(rand.nextGaussian() * speed, rand.nextGaussian() * speed,
-					rand.nextGaussian() * speed);
+			entity.setDeltaMovement(rand.nextGaussian() * speed, rand.nextGaussian() * speed, rand.nextGaussian() * speed);
 			level.addFreshEntity(entity);
 		}
 		level.setBlockAndUpdate(worldPosition, Blocks.AIR.defaultBlockState());
 		for (int i = 0; i < 10; i++)
-			this.level.playSound((Player) null, pos, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, SoundSource.BLOCKS,
-					100000.0F, 20 + 5 * i);
+			this.level.playSound((Player) null, pos, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, SoundSource.BLOCKS, 100000.0F, 20 + 5 * i);
 	}
 
 	public ItemStack getItem() {
@@ -92,9 +98,10 @@ public class BeBurstSeed extends BlockEntityParent {
 	}
 
 	public float getChaos() {
-		if (getItem().getCount() >= 4)
-			return chaos;
-		return 0;
+		int count = getItem().getCount();
+		if (count < 4)
+			return chaos / (4 - count);
+		return chaos;
 	}
 
 	public ItemStack tryAddItem(Player player, ItemStack stack) {
@@ -114,14 +121,16 @@ public class BeBurstSeed extends BlockEntityParent {
 			inv.insertItem(0, copy, false);
 
 			int count = getItem().getCount();
-			if (count > 4)
-				chaos = (chaos * 2 + .005f * count);
+
+			if (count < 4)
+				chaos += CHAOS_LINE / (10 - count);
+			else
+				chaos = chaos + CHAOS_LINE + (count * .01f);
+
 			return ret;
 		}
 
-		if (!UtilItemStack.isValid(stack)) {
-			chaos = (chaos * 2 + .005f);
-		}
+		chaos += CHAOS_LINE / 3;
 
 		return stack;
 	}

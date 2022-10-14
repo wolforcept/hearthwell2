@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"DP ",
+		"PTP",
+		" PP"
+	],
+	"key": {
+		"P": {
+			"item": "hearthwell:petrified_wood_chunk"
+		},
+		"T": {
+			"item": "hearthwell:token_base"
+		},
+		"D": {
+			"item": "hearthwell:myst_dust_block"
+		}
+	},
+	"result": {
+		"item": "hearthwell:token_chalk"	}
+}

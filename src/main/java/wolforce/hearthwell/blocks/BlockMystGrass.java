@@ -44,7 +44,7 @@ public class BlockMystGrass extends BaseBlock {
 
 	private boolean canBeGrass(ServerLevel world, BlockPos pos) {
 		BlockState up = world.getBlockState(pos.above());
-		return world.isEmptyBlock(pos.above()) || up.useShapeForLightOcclusion() /* || !up.isOpaqueCube(world, pos) */;
+		return world.isEmptyBlock(pos.above()) || !up.canOcclude();
 	}
 
 	@Override

@@ -1,8 +1,12 @@
 package wolforce.hearthwell.blocks;
 
+import static wolforce.hearthwell.data.MapData.DATA;
+
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -14,7 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import wolforce.hearthwell.bases.BaseFallingBlock;
-import wolforce.hearthwell.data.MapData;
 import wolforce.hearthwell.data.recipes.RecipeCrushing;
 import wolforce.utils.stacks.UtilItemStack;
 
@@ -25,20 +28,20 @@ public class BlockCrushingBlock extends BaseFallingBlock {
 	}
 
 	@Override
-	public void onLand(Level world, BlockPos pos, BlockState state1, BlockState state2, FallingBlockEntity entity) {
-		List<ItemEntity> entities = world.getEntitiesOfClass(ItemEntity.class, new AABB(pos));
+	public void onLand(Level level, BlockPos pos, BlockState state1, BlockState state2, FallingBlockEntity entity) {
+		List<ItemEntity> entities = level.getEntitiesOfClass(ItemEntity.class, new AABB(pos));
 
 		for (ItemEntity itemEntity : entities) {
-			for (RecipeCrushing recipe : MapData.DATA.recipes_crushing) {
+			for (RecipeCrushing recipe : DATA().recipes_crushing) {
 				if (recipe.matches(itemEntity.getItem())) {
 					itemEntity.kill();
-					if (!world.isClientSide)
+					level.playSound(null, pos, SoundEvents.HUSK_STEP, SoundSource.BLOCKS, 1, 1);
+					if (!level.isClientSide)
 						for (ItemStack _newItem : recipe.getOutputStacks()) {
 							ItemStack newItem = _newItem.copy();
 							newItem.setCount(itemEntity.getItem().getCount() * _newItem.getCount());
-							ItemEntity newItemEntity = new ItemEntity(world, pos.getX(), pos.getY() + .5f,
-									pos.getZ() + .5f, newItem);
-							world.addFreshEntity(newItemEntity);
+							ItemEntity newItemEntity = new ItemEntity(level, pos.getX(), pos.getY() + .5f, pos.getZ() + .5f, newItem);
+							level.addFreshEntity(newItemEntity);
 						}
 				}
 			}
@@ -46,8 +49,7 @@ public class BlockCrushingBlock extends BaseFallingBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-			BlockHitResult res) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult res) {
 
 //		if (player.isShiftKeyDown()) {
 		if (UtilItemStack.isValid(player.getMainHandItem())) {

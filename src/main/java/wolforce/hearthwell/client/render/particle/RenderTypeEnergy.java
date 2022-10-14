@@ -18,14 +18,7 @@ import wolforce.hearthwell.net.ClientProxy;
 
 public class RenderTypeEnergy implements ParticleRenderType {
 
-	private boolean dark;
-
 	public RenderTypeEnergy() {
-	}
-
-	public RenderTypeEnergy dark() {
-		dark = Math.random() < .5;
-		return this;
 	}
 
 	@SuppressWarnings("deprecation")

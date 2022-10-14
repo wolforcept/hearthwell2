@@ -1,4 +1,21 @@
 {
-	"parent": "hearthwell:block/myst_container"
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "hearthwell:items/myst_container"
+	},
+	"overrides": [
+		{ "predicate": { "fueltype": 0 }, "model": "hearthwell:item/myst_container" },
+		{ "predicate": { "fueltype": 1 }, "model": "hearthwell:item/myst_container_1" },
+		{ "predicate": { "fueltype": 2 }, "model": "hearthwell:item/myst_container_2" },
+		{ "predicate": { "fueltype": 3 }, "model": "hearthwell:item/myst_container_3" },
+		{ "predicate": { "fueltype": 4 }, "model": "hearthwell:item/myst_container_4" },
+		{ "predicate": { "fueltype": 5 }, "model": "hearthwell:item/myst_container_5" },
+		{ "predicate": { "fueltype": 6 }, "model": "hearthwell:item/myst_container_6" },
+		{ "predicate": { "fueltype": 7 }, "model": "hearthwell:item/myst_container_7" },
+		{ "predicate": { "fueltype": 8 }, "model": "hearthwell:item/myst_container_8" },
+		{ "predicate": { "fueltype": 9 }, "model": "hearthwell:item/myst_container_9" },
+		{ "predicate": { "fueltype": 10 }, "model": "hearthwell:item/myst_container_10" },
+		{ "predicate": { "fueltype": 11 }, "model": "hearthwell:item/myst_container_11" }
+	]
 }
 

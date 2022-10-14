@@ -1,11 +1,14 @@
 package wolforce.hearthwell.integration.jei;
 
+import static wolforce.hearthwell.data.MapData.DATA;
+
 import java.util.Map.Entry;
 
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -24,6 +27,12 @@ public class JeiIntegration extends IJeiIntegration {
 	}
 
 	@Override
+	public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
+		DATA();
+		super.onRuntimeAvailable(jeiRuntime);
+	}
+
+	@Override
 	public void registerCategories() {
 
 		add(new JeiCatTransformation());
@@ -33,7 +42,7 @@ public class JeiIntegration extends IJeiIntegration {
 		add(new JeiCatHandItem());
 		add(new JeiCatCrushing());
 		add(new JeiCatCoring());
-		add(new JeiCatCombining());
+//		add(new JeiCatCombining());
 		add(new JeiCatReacting());
 	}
 

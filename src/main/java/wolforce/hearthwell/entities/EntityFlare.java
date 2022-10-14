@@ -1,8 +1,11 @@
 package wolforce.hearthwell.entities;
 
+import static wolforce.hearthwell.data.MapData.DATA;
+
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -10,16 +13,21 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.NetworkHooks;
 import wolforce.hearthwell.HearthWell;
 import wolforce.hearthwell.data.MapData;
@@ -32,18 +40,17 @@ import wolforce.utils.UtilWorld;
 public class EntityFlare extends Entity {
 
 	public static final int PLAYER_DISTANCE = 5;
-	public static final String REG_ID = "entity_flare";
+	public static final String REG_ID = "flare";
 //	private static PerlinSimplexNoise perlin = new PerlinSimplexNoise(new WorldgenRandom(new LegacyRandomSource(2345L)), IntStream.rangeClosed(-3, 0).boxed().collect(Collectors.toList()));
 
-	// TODO its actually now the recipe flare index
 	private static final EntityDataAccessor<Integer> FLARE_INDEX = SynchedEntityData.defineId(EntityFlare.class, EntityDataSerializers.INT);
 
-//	private UUID hwId = null;
 	private String flareType = "";
 	private byte uses = 1;
-	private CompoundTag unlockedNodes = new CompoundTag();
-	private Vec3 spireTarget = null;
+	private CompoundTag oldUnlockedNodes = new CompoundTag();
+//	private Vec3 spireTarget = null;
 	private float addedY;
+	private UUID hwId;
 
 	public EntityFlare(Level world) {
 		this(Entities.entity_flare.get(), world);
@@ -62,11 +69,13 @@ public class EntityFlare extends Entity {
 //		return null;
 //	}
 
-	public void set(String flareType, int flareIndex, byte uses, CompoundTag unlockedNodes) {
+//	public void set(String flareType, int flareIndex, byte uses, CompoundTag unlockedNodes) {
+	public void set(UUID hwId, String flareType, int flareIndex, byte uses) {
+		this.hwId = hwId;
 		this.flareType = flareType;
 		this.setFlareIndex(flareIndex);
 		this.uses = uses;
-		this.unlockedNodes = unlockedNodes;
+//		this.unlockedNodes = unlockedNodes;
 	}
 
 	//
@@ -88,6 +97,12 @@ public class EntityFlare extends Entity {
 	}
 
 	private void serverTick() {
+
+		if (level instanceof ServerLevel serverLevel) {
+			ChunkPos chunkPos = chunkPosition();
+			ForgeChunkManager.forceChunk(serverLevel, HearthWell.MODID, blockPosition(), chunkPos.x, chunkPos.z, true, true);
+		}
+
 		BlockPos pos = blockPosition();
 //		Vec3 posVec = position();
 		Player nearPlayer = findNearestPlayer();
@@ -112,52 +127,52 @@ public class EntityFlare extends Entity {
 			checkRecipes(pos, level.getBlockState(pos));
 	}
 
-	private boolean moveToSpire() {
-
-		Vec3 pos = new Vec3(getX(), getY(), getZ());
-//		Vec3 pos = new Vec3(getX(), realY, getZ());
-		if (spireTarget != null) {
-			Vec3 dirVec = spireTarget.subtract(pos);
-//			moveTo(p);
-//			moveTo(spireTarget);
-			Vec3 tar = pos.add(dirVec.normalize().scale(.1));
-			setRealPosition(tar.x, tar.y, tar.z);
-		}
-
-		if (tickCount % 20 == 0) {
-			List<EntitySpire> ents = level.getEntitiesOfClass(EntitySpire.class, new AABB(getOnPos()).inflate(2));
-			if (ents.size() > 0) {
-				double avgX = 0, avgY = 0, avgZ = 0;
-				for (EntitySpire s : ents) {
-					avgX += s.getX();
-					avgY += s.getY() + 1;
-					avgZ += s.getZ();
-				}
-				avgX /= ents.size();
-				avgY /= ents.size();
-				avgZ /= ents.size();
-
-//				spireTarget = new Vec3(avgX +.5+ random.nextGaussian() * .1, avgY +.5+ random.nextGaussian() * .1,
-//						avgZ +.5+ random.nextGaussian() * .1);
-				spireTarget = new Vec3(//
-						avgX + (ents.size() == 1 ? random.nextGaussian() * .5 : 0), //
-						avgY + (ents.size() == 1 ? 1.5 : .5), //
-						avgZ + (ents.size() == 1 ? random.nextGaussian() * .5 : 0)//
-				);
-			} else {
-				spireTarget = null;
-			}
-		}
-
-		return false;
-	}
+//	private boolean moveToSpire() {
+//
+//		Vec3 pos = new Vec3(getX(), getY(), getZ());
+////		Vec3 pos = new Vec3(getX(), realY, getZ());
+//		if (spireTarget != null) {
+//			Vec3 dirVec = spireTarget.subtract(pos);
+////			moveTo(p);
+////			moveTo(spireTarget);
+//			Vec3 tar = pos.add(dirVec.normalize().scale(.1));
+//			setRealPosition(tar.x, tar.y, tar.z);
+//		}
+//
+//		if (tickCount % 20 == 0) {
+//			List<EntitySpire> ents = level.getEntitiesOfClass(EntitySpire.class, new AABB(getOnPos()).inflate(2));
+//			if (ents.size() > 0) {
+//				double avgX = 0, avgY = 0, avgZ = 0;
+//				for (EntitySpire s : ents) {
+//					avgX += s.getX();
+//					avgY += s.getY() + 1;
+//					avgZ += s.getZ();
+//				}
+//				avgX /= ents.size();
+//				avgY /= ents.size();
+//				avgZ /= ents.size();
+//
+////				spireTarget = new Vec3(avgX +.5+ random.nextGaussian() * .1, avgY +.5+ random.nextGaussian() * .1,
+////						avgZ +.5+ random.nextGaussian() * .1);
+//				spireTarget = new Vec3(//
+//						avgX + (ents.size() == 1 ? random.nextGaussian() * .5 : 0), //
+//						avgY + (ents.size() == 1 ? 1.5 : .5), //
+//						avgZ + (ents.size() == 1 ? random.nextGaussian() * .5 : 0)//
+//				);
+//			} else {
+//				spireTarget = null;
+//			}
+//		}
+//
+//		return false;
+//	}
 
 	private Player findNearestPlayer() {
 		List<Player> players = level.getEntitiesOfClass(Player.class, getBoundingBox().inflate(PLAYER_DISTANCE));
 
 		for (Iterator<Player> iterator = players.iterator(); iterator.hasNext();) {
 			Player playerEntity = (Player) iterator.next();
-			if (playerEntity.getMainHandItem().getItem() != HearthWell.flare_torch && matchesAnyRecipePlayer(playerEntity.getMainHandItem()) == null)
+			if (playerEntity.getMainHandItem().getItem() != HearthWell.flare_torch && matchesAnyRecipeHandItem(playerEntity.getMainHandItem()) == null)
 				iterator.remove();
 		}
 
@@ -177,13 +192,25 @@ public class EntityFlare extends Entity {
 		return players.get(0);
 	}
 
-	private RecipeHandItem matchesAnyRecipePlayer(ItemStack stack) {
-		for (RecipeHandItem recipe : MapData.DATA.recipes_handitem) {
+	private RecipeHandItem matchesAnyRecipeHandItem(ItemStack stack) {
+		MapData DATA = DATA();
+		CompoundTag unlockedNodes = getUnlockedNodes();
+		for (RecipeHandItem recipe : DATA.recipes_handitem) {
 			if (recipe.isUnlocked(unlockedNodes) && recipe.flareType.equals(flareType) && recipe.matches(stack)) {
 				return recipe;
 			}
 		}
 		return null;
+	}
+
+	private CompoundTag getUnlockedNodes() {
+		if (level instanceof ServerLevel level) {
+			Entity hwEnt = level.getEntity(hwId);
+			if (hwEnt instanceof EntityHearthWell entity) {
+				oldUnlockedNodes = entity.getUnlockedNodes();
+			}
+		}
+		return oldUnlockedNodes;
 	}
 
 	private void moveToPlayer(Player player) {
@@ -208,7 +235,7 @@ public class EntityFlare extends Entity {
 		Vec3 direction = pos.subtract(linearPos);
 
 		if (player != null && player.getMainHandItem().getItem() != HearthWell.flare_torch && direction.length() < 0.25) {
-			RecipeHandItem recipe = matchesAnyRecipePlayer(player.getMainHandItem());
+			RecipeHandItem recipe = matchesAnyRecipeHandItem(player.getMainHandItem());
 			if (recipe != null) {
 				player.getMainHandItem().shrink(1);
 				List<ItemStack> stacks = recipe.getOutputStacksFlat();
@@ -217,6 +244,7 @@ public class EntityFlare extends Entity {
 				uses--;
 				if (uses <= 0)
 					kill();
+				level.playSound((Player) null, blockPosition(), SoundEvents.BONE_BLOCK_PLACE, SoundSource.BLOCKS, 10000.0F, (float) (4 + Math.random()));
 			}
 		}
 
@@ -270,7 +298,7 @@ public class EntityFlare extends Entity {
 //					color = (int) (Math.random() * Integer.MAX_VALUE);
 //				world.addParticle(new ParticleEnergyData(-color), pos.x + x, pos.y + y, pos.z + z, vx, vy, vz);
 //				if (color == -16777216)
-				level.addParticle(new ParticleEnergyData(color, 1), pos.x + x, pos.y + y, pos.z + z, vx, vy, vz);
+				level.addParticle(new ParticleEnergyData(color), pos.x + x, pos.y + y, pos.z + z, vx, vy, vz);
 //				double prob = world.getDayTime() > 12000 ? 0.75 : 0.25;
 			} else {
 				level.addAlwaysVisibleParticle(new ParticleEnergyData(color), pos.x + x, pos.y + y, pos.z + z, vx, vy, vz);
@@ -280,9 +308,12 @@ public class EntityFlare extends Entity {
 	}
 
 	private void checkRecipes(BlockPos pos, BlockState state) {
+		MapData DATA = DATA();
 		Block block = state.getBlock();
 
-		for (RecipeTransformation recipe : MapData.DATA.recipes_transformation) {
+		CompoundTag unlockedNodes = getUnlockedNodes();
+
+		for (RecipeTransformation recipe : DATA.recipes_transformation) {
 			if (recipe.isUnlocked(unlockedNodes) && recipe.flareType.equals(this.flareType) && recipe.matches(block)) {
 //				if (recipe.getOuputBlock() != null)
 //					world.setBlockState(pos, recipe.getOuputBlock().getDefaultState());
@@ -297,7 +328,9 @@ public class EntityFlare extends Entity {
 					for (ItemStack stack : stacks)
 						UtilWorld.spawnItem(level, pos, stack);
 				}
-				uses--;
+
+				level.playSound((Player) null, blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 10.0F, (float) (Math.random()));
+				
 				if (uses <= 0)
 					kill();
 			}
@@ -318,10 +351,11 @@ public class EntityFlare extends Entity {
 	}
 
 	private int getColor() {
+		MapData DATA = DATA();
 		int colorRecipeIndex = entityData.get(FLARE_INDEX);
-		if (colorRecipeIndex >= MapData.DATA.recipes_flare.size())
+		if (colorRecipeIndex >= DATA.recipes_flare.size())
 			colorRecipeIndex = 0;
-		return MapData.DATA.recipes_flare.get(colorRecipeIndex).getColor();
+		return DATA.recipes_flare.get(colorRecipeIndex).getColor();
 //		return entityData.get(COLOR);
 	}
 
@@ -336,22 +370,23 @@ public class EntityFlare extends Entity {
 
 	@Override
 	protected void addAdditionalSaveData(CompoundTag compound) {
+		compound.putUUID("hwuuid", hwId);
 		compound.putString("flareType", flareType);
 		compound.putInt("flareIndex", getFlareIndex());
 		compound.putByte("uses", uses);
 		compound.putFloat("addedY", addedY);
 
-		compound.put("unlockedNodes", unlockedNodes);
+		compound.put("unlockedNodes", getUnlockedNodes());
 	}
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag compound) {
+		hwId = compound.getUUID("hwuuid");
 		flareType = compound.getString("flareType");
 		setFlareIndex(compound.getInt("flareIndex"));
 		uses = compound.getByte("uses");
 		addedY = compound.getFloat("addedY");
-
-		unlockedNodes = compound.getCompound("unlockedNodes");
+		oldUnlockedNodes = compound.getCompound("unlockedNodes");
 	}
 
 	@Override

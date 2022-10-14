@@ -14,26 +14,27 @@ import wolforce.hearthwell.client.render.particle.RenderTypeEnergy;
 @OnlyIn(Dist.CLIENT)
 public class ParticleEnergy extends TextureSheetParticle {
 
-	public static enum ColorType {
-		NORMAL(new RenderTypeEnergy()), DARK(new RenderTypeEnergy().dark());
+//	public static enum ColorType {
+//		NORMAL(new RenderTypeEnergy()), DARK(new RenderTypeEnergy().dark());
+//
 
-		ParticleRenderType renderType;
-
-		ColorType(ParticleRenderType renderType) {
-			this.renderType = renderType;
-		}
-	}
+//
+//		ColorType(ParticleRenderType renderType) {
+//			this.renderType = renderType;
+//		}
+//	}
 
 	public static final Minecraft mc = Minecraft.getInstance();
 	public static final String REG_ID = "particle_energy";
+	public static final ParticleRenderType renderType = new RenderTypeEnergy();
 
 	private int color;
-	private ColorType type;
+//	private ColorType type;
 
-	public ParticleEnergy(ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet, int color, int type) {
+	public ParticleEnergy(ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet spriteSet, int color) {
 		super(world, x, y, z);
 		this.color = color;
-		this.type = ColorType.values()[type];
+//		this.type = ColorType.values()[type];
 		this.gravity = 0.0F;
 		this.hasPhysics = false;
 		this.xd = xSpeed;
@@ -54,7 +55,7 @@ public class ParticleEnergy extends TextureSheetParticle {
 
 	@Override
 	public ParticleRenderType getRenderType() {
-		return type.renderType;
+		return renderType;
 	}
 
 	@Override
@@ -111,7 +112,7 @@ public class ParticleEnergy extends TextureSheetParticle {
 
 		@Override
 		public Particle createParticle(ParticleEnergyData data, ClientLevel world, double x, double y, double z, double vx, double vy, double vz) {
-			return new ParticleEnergy(world, x, y, z, vx, vy, vz, spriteSet, data.color, data.colorType);
+			return new ParticleEnergy(world, x, y, z, vx, vy, vz, spriteSet, data.color);
 		}
 	}
 

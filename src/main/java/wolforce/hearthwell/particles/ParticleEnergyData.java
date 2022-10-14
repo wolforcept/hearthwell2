@@ -10,28 +10,17 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.registries.ForgeRegistries;
 import wolforce.hearthwell.HearthWell;
-import wolforce.hearthwell.particles.ParticleEnergy.ColorType;
 
 public class ParticleEnergyData implements ParticleOptions {
 
-	int color, colorType;
-
-	public ParticleEnergyData(int color, ColorType colorType) {
-		this.color = color;
-		this.colorType = colorType.ordinal();
-	}
-
-	public ParticleEnergyData(int color, int colorType) {
-		this.color = color;
-		this.colorType = colorType;
-	}
+	int color;
 
 	public ParticleEnergyData(int color) {
-		this(color, ColorType.NORMAL);
+		this.color = color;
 	}
 
 	public ParticleEnergyData() {
-		this(HearthWell.getRandomColorOfHearthwell(), ColorType.NORMAL);
+		this(HearthWell.getRandomColorOfHearthwell());
 	}
 
 	public ParticleEnergyData(int r, int g, int b) {
@@ -42,10 +31,6 @@ public class ParticleEnergyData implements ParticleOptions {
 		this((a << 24) | (r << 16) | (g << 8) | b);
 	}
 
-	public ParticleEnergyData(int r, int g, int b, int a, ColorType colorType) {
-		this((a << 24) | (r << 16) | (g << 8) | b, colorType);
-	}
-
 	@Override
 	public ParticleType<?> getType() {
 		return TYPE;
@@ -54,7 +39,6 @@ public class ParticleEnergyData implements ParticleOptions {
 	@Override
 	public void writeToNetwork(FriendlyByteBuf buffer) {
 		buffer.writeInt(color);
-		buffer.writeInt(colorType);
 	}
 
 	@Override
@@ -67,14 +51,14 @@ public class ParticleEnergyData implements ParticleOptions {
 
 		@Override
 		public ParticleEnergyData fromCommand(ParticleType<ParticleEnergyData> type, StringReader reader) throws CommandSyntaxException {
-			reader.readString();
-			reader.expect(' ');
+//			reader.readString();
+//			reader.expect(' ');
 			return new ParticleEnergyData(reader.readInt());
 		}
 
 		@Override
 		public ParticleEnergyData fromNetwork(ParticleType<ParticleEnergyData> type, FriendlyByteBuf buf) {
-			return new ParticleEnergyData(buf.readInt(), buf.readInt());
+			return new ParticleEnergyData(buf.readInt());
 		}
 	};
 
@@ -86,8 +70,7 @@ public class ParticleEnergyData implements ParticleOptions {
 
 	public static final Codec<ParticleEnergyData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			// specify fields
-			Codec.INT.fieldOf("color").forGetter(d -> d.color), //
-			Codec.INT.fieldOf("type").forGetter(d -> d.colorType)
+			Codec.INT.fieldOf("color").forGetter(d -> d.color) //
 	// specify constructor
 	).apply(instance, ParticleEnergyData::new));
 

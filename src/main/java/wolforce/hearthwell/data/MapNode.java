@@ -10,7 +10,7 @@ import wolforce.hearthwell.HearthWell;
 
 public class MapNode implements Serializable {
 
-	private static final long serialVersionUID = HearthWell.VERSION.hashCode();
+	private static final long serialVersionUID = HearthWell.NETDATA_VERSION.hashCode();
 
 	public byte x, y;
 	public int time;

@@ -1,5 +1,7 @@
 package wolforce.hearthwell.integration.jei;
 
+import static wolforce.hearthwell.data.MapData.DATA;
+
 import java.util.List;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -19,6 +21,7 @@ public class JeiCatCrushing extends JeiCat<RecipeCrushing> {
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, RecipeCrushing recipe, IFocusGroup focuses) {
+		DATA();
 		builder.addInvisibleIngredients(RecipeIngredientRole.CATALYST).addItemStack(new ItemStack(HearthWell.crushing_block));
 		builder.addSlot(RecipeIngredientRole.INPUT, 17, 17).addItemStacks(recipe.getInputStack());
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 87, 17).addItemStacks(recipe.getOutputStacksFlat());
@@ -26,7 +29,8 @@ public class JeiCatCrushing extends JeiCat<RecipeCrushing> {
 
 	@Override
 	public List<RecipeCrushing> getAllRecipes() {
-		return MapData.DATA.recipes_crushing;
+		MapData DATA = DATA();
+		return DATA.recipes_crushing;
 	}
 
 }

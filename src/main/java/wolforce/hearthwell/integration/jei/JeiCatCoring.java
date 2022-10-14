@@ -11,6 +11,7 @@ import wolforce.hearthwell.HearthWell;
 import wolforce.hearthwell.data.MapData;
 import wolforce.hearthwell.data.recipes.RecipeCoring;
 import wolforce.hearthwell.integration.jei.meta.JeiCat;
+import static wolforce.hearthwell.data.MapData.DATA;
 
 public class JeiCatCoring extends JeiCat<RecipeCoring> {
 
@@ -20,6 +21,7 @@ public class JeiCatCoring extends JeiCat<RecipeCoring> {
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, RecipeCoring recipe, IFocusGroup focuses) {
+		DATA();
 		builder.addSlot(RecipeIngredientRole.INPUT, 52, 9).addItemStacks(recipe.getInputStack());
 		builder.addSlot(RecipeIngredientRole.INPUT, 9, 22).addItemStack(new ItemStack(HearthWell.getTokenItem(recipe.tokenId)));
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 95, 22).addItemStacks(recipe.getOutputStacksFlat());
@@ -27,7 +29,8 @@ public class JeiCatCoring extends JeiCat<RecipeCoring> {
 
 	@Override
 	public List<RecipeCoring> getAllRecipes() {
-		return MapData.DATA.recipes_coring;
+		MapData DATA = DATA();
+		return DATA.recipes_coring;
 	}
 
 	@Override

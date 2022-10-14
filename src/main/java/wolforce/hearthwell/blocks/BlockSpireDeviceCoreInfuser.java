@@ -1,6 +1,9 @@
 package wolforce.hearthwell.blocks;
 
+import static wolforce.hearthwell.data.MapData.DATA;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -16,11 +19,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import wolforce.hearthwell.TokenNames;
 import wolforce.hearthwell.blocks.tiles.BeSpireDevice;
-import wolforce.hearthwell.data.MapData;
 import wolforce.hearthwell.data.recipes.RecipeCoring;
-import wolforce.hearthwell.particles.ParticleEnergyData;
 import wolforce.utils.UtilWorld;
 
 public class BlockSpireDeviceCoreInfuser extends BaseSpireDevice {
@@ -55,32 +55,51 @@ public class BlockSpireDeviceCoreInfuser extends BaseSpireDevice {
 			if (recipe != null) {
 
 				time++;
-				System.out.println(time + "/" + be.getFuel());
 				if (time >= recipe.cost) {
 					level.setBlock(blockpos.above(), Blocks.AIR.defaultBlockState(), 3);
 					level.playSound(null, blockpos, SoundEvents.HUSK_STEP, SoundSource.BLOCKS, 1, 1);
 					for (ItemStack stack : recipe.getOutputStacks())
 						UtilWorld.spawnItem(level, new Vec3(blockpos.getX() + .5, blockpos.getY() + 1.3, blockpos.getZ() + .5), stack, 10, 0, 0, 0);
 
-				} else if (be.tryAddFuel(-1)) {
+				} else if (be.tryRemoveFuel(1)) {
 
-					level.sendParticles(new ParticleEnergyData(TokenNames.getColorOfToken(be.getFuelType())), //
+					level.sendParticles(ParticleTypes.PORTAL, //
 							blockpos.getX() + .5f, //
-							blockpos.getY() + 1.3f, //
+							blockpos.getY() + 1.2f, //
 							blockpos.getZ() + .5f, //
-							1, 0, 0, 0, 0.006f);
+							1, .1, .1, .1, 0.03f);
+
 					be.extraInfo.putInt("time", time);
 				}
+
 			}
 		} else {
 			be.extraInfo.putInt("time", 0);
 		}
 
+//		double d = .3;
+//		double angle = Math.random() * 2 * Math.PI;
+//		angle = (System.currentTimeMillis() % 20) / 20.0 * 2 * Math.PI;
+//		double dd = 1000;
+//		angle = (System.currentTimeMillis() % dd) / (float) dd * 2 * PI;
+//		float xx = (float) (d * Math.cos(angle));
+//		float zz = (float) (d * Math.sin(angle));
+//
+////		SimpleParticleType part = ParticleTypes.COMPOSTER;
+////		SimpleParticleType part = ParticleTypes.CRIT;
+//		SimpleParticleType part = ParticleTypes.ELECTRIC_SPARK;
+////		ParticleEnergyData part = new ParticleEnergyData(TokenNames.getColorOfToken(be.getFuelType()));
+//
+//		level.sendParticles(part, //
+//				blockpos.getX() + .5f + xx, //
+//				blockpos.getY() + 1.2f, // + Math.abs(rand.nextGaussian() * .3), //
+//				blockpos.getZ() + .5f + zz, //
+//				1, 0, 0, 0, 0.01f);
 		return false;
 	}
 
 	private RecipeCoring getMatchingRecipe(Block block, int fuelType) {
-		for (RecipeCoring recipe : MapData.DATA.recipes_coring) {
+		for (RecipeCoring recipe : DATA().recipes_coring) {
 			if (recipe.getInputBlocksFlat().contains(block) && //
 					recipe.tokenId == fuelType)
 				return recipe;

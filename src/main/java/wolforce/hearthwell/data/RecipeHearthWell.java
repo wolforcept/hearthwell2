@@ -14,27 +14,25 @@ import wolforce.hearthwell.entities.EntityHearthWell;
 
 public abstract class RecipeHearthWell implements Serializable {
 
-	private static final long serialVersionUID = HearthWell.VERSION.hashCode();
+	private static final long serialVersionUID = HearthWell.NETDATA_VERSION.hashCode();
 
-	public transient MapNode mapNode;
-	public final ResourceLocation texture;
 	public final String recipeId;
-
 	private final String input;
 	private final String output;
 
-	private transient List<RecipePart> inputParts;
-	private transient List<RecipePart> outputParts;
+	public transient MapNode mapNode;
+	public transient List<RecipePart> inputParts;
+	public transient List<RecipePart> outputParts;
+	private transient boolean isInnited = false;
 
-	public final int width, height;
-
-	protected RecipeHearthWell(String tex, String recipeId, int width, int height, String input, String output) {
+	protected RecipeHearthWell(String recipeId, String input, String output) {
 		this.recipeId = recipeId;
 		this.input = input;
 		this.output = output;
-		this.width = width;
-		this.height = height;
-		this.texture = new ResourceLocation(HearthWell.MODID, "textures/gui/" + tex + ".png");
+	}
+
+	public ResourceLocation getTexture() {
+		return new ResourceLocation(HearthWell.MODID, "textures/gui/" + getTypeString() + ".png");
 	}
 
 	public void init(MapData data, MapNode mapNode) {
@@ -55,7 +53,14 @@ public abstract class RecipeHearthWell implements Serializable {
 		System.out.println("--//--");
 
 		postInitRecipe(data);
+		isInnited = true;
 	}
+
+	public abstract String getTypeString();
+
+	public abstract int getWidth();
+
+	public abstract int getHeight();
 
 	public boolean isUnlocked(EntityHearthWell hw) {
 		return hw.isUnlocked(mapNode);
@@ -135,5 +140,9 @@ public abstract class RecipeHearthWell implements Serializable {
 
 	private List<Block> getOutputBlocks() {
 		return outputParts.stream().map(x -> x.randomBlock()).toList();
+	}
+
+	public boolean isInnited() {
+		return isInnited;
 	}
 }

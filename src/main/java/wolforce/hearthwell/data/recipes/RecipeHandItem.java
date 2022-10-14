@@ -9,20 +9,29 @@ import wolforce.utils.stacks.UtilItemStack;
 
 public class RecipeHandItem extends RecipeHearthWell {
 
-	private static final long serialVersionUID = HearthWell.VERSION.hashCode();
+	private static final long serialVersionUID = HearthWell.NETDATA_VERSION.hashCode();
 
-//	private final String[] inputs;
-//	public final String output;
 	public final String flareType;
-//	private transient Item realOutput;
-
 	public static final int WIDTH = 108, HEIGHT = 68;
 
 	public RecipeHandItem(String name, String flareType, String input, String output) {
-		super("handitem", name, WIDTH, HEIGHT, input, output);
+		super(name, input, output);
 		this.flareType = flareType;
-//		this.input = input;
-//		this.output = output;
+	}
+
+	@Override
+	public String getTypeString() {
+		return "handitem";
+	}
+
+	@Override
+	public int getWidth() {
+		return WIDTH;
+	}
+
+	@Override
+	public int getHeight() {
+		return HEIGHT;
 	}
 
 	public boolean matches(ItemStack stack) {

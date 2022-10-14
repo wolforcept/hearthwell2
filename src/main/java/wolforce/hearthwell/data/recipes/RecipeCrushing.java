@@ -9,12 +9,11 @@ import wolforce.utils.stacks.UtilItemStack;
 
 public class RecipeCrushing extends RecipeHearthWell {
 
-	private static final long serialVersionUID = HearthWell.VERSION.hashCode();
-
 	public static final int WIDTH = 120, HEIGHT = 50;
+	private static final long serialVersionUID = HearthWell.NETDATA_VERSION.hashCode();
 
 	public RecipeCrushing(String name, String input, String output) {
-		super("crushing", name, WIDTH, HEIGHT, input, output);
+		super(name, input, output);
 	}
 
 	public boolean matches(ItemStack stack) {
@@ -25,6 +24,21 @@ public class RecipeCrushing extends RecipeHearthWell {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public String getTypeString() {
+		return "crushing";
+	}
+
+	@Override
+	public int getWidth() {
+		return WIDTH;
+	}
+
+	@Override
+	public int getHeight() {
+		return HEIGHT;
 	}
 
 }

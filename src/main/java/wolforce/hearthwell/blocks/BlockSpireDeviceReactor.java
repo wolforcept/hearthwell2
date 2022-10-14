@@ -1,5 +1,7 @@
 package wolforce.hearthwell.blocks;
 
+import static wolforce.hearthwell.data.MapData.DATA;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -17,7 +19,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import wolforce.hearthwell.TokenNames;
 import wolforce.hearthwell.blocks.tiles.BeSpireDevice;
-import wolforce.hearthwell.data.MapData;
 import wolforce.hearthwell.data.recipes.RecipeReacting;
 import wolforce.hearthwell.particles.ParticleEnergyData;
 
@@ -56,7 +57,7 @@ public class BlockSpireDeviceReactor extends BaseSpireDevice {
 			if (time >= recipe.cost) {
 				level.setBlock(blockpos.below(), recipe.getRandomOuputBlock().defaultBlockState(), 3);
 				level.playSound(null, blockpos, SoundEvents.POINTED_DRIPSTONE_DRIP_LAVA_INTO_CAULDRON, SoundSource.BLOCKS, 1, 1);
-			} else if (be.tryAddFuel(-1)) {
+			} else if (be.tryRemoveFuel(1)) {
 
 				level.sendParticles(new ParticleEnergyData(TokenNames.getColorOfToken(be.getFuelType())), //
 						blockpos.getX() + .5f, //
@@ -73,7 +74,7 @@ public class BlockSpireDeviceReactor extends BaseSpireDevice {
 	}
 
 	private RecipeReacting getMatchingRecipe(Block block, int fuelType) {
-		for (RecipeReacting recipe : MapData.DATA.recipes_reacting) {
+		for (RecipeReacting recipe : DATA().recipes_reacting) {
 			if (recipe.getInputBlocksFlat().contains(block) && //
 					recipe.tokenId == fuelType)
 				return recipe;

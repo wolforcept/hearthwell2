@@ -38,12 +38,11 @@ public class IngredientFlare {
 	}
 
 	public static List<IngredientFlare> getAll() {
-		return DATA.recipes_flare.stream().map(s -> new IngredientFlare(s.flare_name, s.recipeId, s.color_string))
-				.collect(toList());
+		return DATA().recipes_flare.stream().map(s -> new IngredientFlare(s.flare_name, s.recipeId, s.color_string)).collect(toList());
 	}
 
 	public static List<IngredientFlare> get(String flareType) {
-		return DATA.recipes_flare.stream() //
+		return DATA().recipes_flare.stream() //
 				.map(recipe -> new IngredientFlare(recipe.flare_name, recipe.recipeId, recipe.color_string)) //
 				.filter(ingredient -> ingredient.flareType.equals(flareType)) //
 				.collect(toList());
@@ -78,8 +77,7 @@ public class IngredientFlare {
 
 	public static class Renderer implements IIngredientRenderer<IngredientFlare> {
 
-		public static final ResourceLocation GUI_TEXTURE = new ResourceLocation(HearthWell.MODID,
-				"textures/gui/flare_icon.png");
+		public static final ResourceLocation GUI_TEXTURE = new ResourceLocation(HearthWell.MODID, "textures/gui/flare_icon.png");
 
 		@Override
 		public List<Component> getTooltip(IngredientFlare flare, TooltipFlag arg1) {
@@ -115,8 +113,7 @@ public class IngredientFlare {
 		}
 
 		@Override
-		public @Nullable IngredientFlare getMatch(Iterable<IngredientFlare> flares, IngredientFlare flare,
-				UidContext context) {
+		public @Nullable IngredientFlare getMatch(Iterable<IngredientFlare> flares, IngredientFlare flare, UidContext context) {
 			for (IngredientFlare ingredientFlare : flares) {
 				if (ingredientFlare.flareType.equals(flare.flareType))
 					return ingredientFlare;

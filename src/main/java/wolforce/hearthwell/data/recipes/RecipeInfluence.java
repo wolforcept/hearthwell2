@@ -8,12 +8,26 @@ import wolforce.hearthwell.data.RecipeHearthWell;
 
 public class RecipeInfluence extends RecipeHearthWell {
 
-	private static final long serialVersionUID = HearthWell.VERSION.hashCode();
-
 	public static final int WIDTH = 82, HEIGHT = 78;
+	private static final long serialVersionUID = HearthWell.NETDATA_VERSION.hashCode();
 
 	public RecipeInfluence(String name, String input, String output) {
-		super("influence", name, WIDTH, HEIGHT, input, output);
+		super(name, input, output);
+	}
+
+	@Override
+	public String getTypeString() {
+		return "influence";
+	}
+
+	@Override
+	public int getWidth() {
+		return WIDTH;
+	}
+
+	@Override
+	public int getHeight() {
+		return HEIGHT;
 	}
 
 	public boolean matches(Block block) {

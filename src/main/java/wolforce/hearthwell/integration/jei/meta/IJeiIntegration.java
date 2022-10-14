@@ -21,6 +21,7 @@ public abstract class IJeiIntegration implements IModPlugin {
 
 	private LinkedList<JeiCat<?>> jeiCats;
 	private HashMap<Object, String[]> infos;
+	private boolean catsAreRegistered = false;
 
 	public IJeiIntegration() {
 		// MinecraftForge.EVENT_BUS.register(this);
@@ -54,7 +55,10 @@ public abstract class IJeiIntegration implements IModPlugin {
 	public void registerCategories(IRecipeCategoryRegistration reg) {
 
 		JeiCat.helpers = reg.getJeiHelpers();
-		registerCategories();
+		if (!catsAreRegistered) {
+			registerCategories();
+			catsAreRegistered = true;
+		}
 
 		for (JeiCat<?> cat : getCats())
 			reg.addRecipeCategories(cat);
@@ -74,8 +78,7 @@ public abstract class IJeiIntegration implements IModPlugin {
 		for (JeiCat<?> cat : getCats()) {
 			Rect2i clickArea = cat.getClickArea();
 			if (clickArea != null && cat.getGuiClass() != null)
-				reg.addRecipeClickArea(cat.getGuiClass(), clickArea.getX(), clickArea.getY(), clickArea.getWidth(),
-						clickArea.getHeight(), cat.getRecipeType());
+				reg.addRecipeClickArea(cat.getGuiClass(), clickArea.getX(), clickArea.getY(), clickArea.getWidth(), clickArea.getHeight(), cat.getRecipeType());
 		}
 	}
 
@@ -89,12 +92,10 @@ public abstract class IJeiIntegration implements IModPlugin {
 			Object obj = entry.getKey();
 
 			if (obj instanceof Item) {
-				reg.addIngredientInfo(new ItemStack((Item) obj), VanillaTypes.ITEM_STACK,
-						Util.stringsToComponents(entry.getValue()));
+				reg.addIngredientInfo(new ItemStack((Item) obj), VanillaTypes.ITEM_STACK, Util.stringsToComponents(entry.getValue()));
 
 			} else if (obj instanceof Block) {
-				reg.addIngredientInfo(new ItemStack((Block) obj), VanillaTypes.ITEM_STACK,
-						Util.stringsToComponents(entry.getValue()));
+				reg.addIngredientInfo(new ItemStack((Block) obj), VanillaTypes.ITEM_STACK, Util.stringsToComponents(entry.getValue()));
 			}
 		}
 

@@ -16,6 +16,7 @@ import wolforce.hearthwell.bases.BlockHasRenderLayer;
 import wolforce.hearthwell.client.render.entity.RendererFlare;
 import wolforce.hearthwell.client.render.entity.RendererHearthWell;
 import wolforce.hearthwell.client.render.entity.RendererSpire;
+import wolforce.hearthwell.client.render.entity.RendererTokenChalkMark;
 import wolforce.hearthwell.client.render.te.TerBurstSeed;
 import wolforce.hearthwell.net.ClientProxy;
 import wolforce.hearthwell.particles.ParticleEnergy;
@@ -52,6 +53,7 @@ public class EventsMod {
 		event.registerEntityRenderer(Entities.entity_hearthwell.get(), RendererHearthWell::new);
 		event.registerEntityRenderer(Entities.entity_flare.get(), RendererFlare::new);
 		event.registerEntityRenderer(Entities.entity_spire.get(), RendererSpire::new);
+		event.registerEntityRenderer(Entities.entity_tokenchalkmark.get(), RendererTokenChalkMark::new);
 	}
 
 	private static void registerRenderLayer(Block block) {

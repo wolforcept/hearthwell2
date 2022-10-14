@@ -68,8 +68,7 @@ public class EventsForge {
 
 			String string = "" + (char) letter.n;
 			Quaternion cam = entityRenderDispatcher.cameraOrientation();
-			Vec3 relPos = new Vec3(letter.pos.getX(), letter.pos.getY(), letter.pos.getZ())
-					.subtract(player.getPosition(event.getPartialTick()));
+			Vec3 relPos = new Vec3(letter.pos.getX(), letter.pos.getY(), letter.pos.getZ()).subtract(player.getPosition(event.getPartialTick()));
 
 			float f = letter.nTransparency / 200f;
 			int ff = (int) ((.1 + f * .9) * 0xFF);

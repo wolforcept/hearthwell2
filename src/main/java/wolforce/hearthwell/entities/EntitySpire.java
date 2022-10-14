@@ -23,7 +23,7 @@ import wolforce.hearthwell.registries.Entities;
 
 public class EntitySpire extends Entity {
 
-	public static final String REG_ID = "entity_spire";
+	public static final String REG_ID = "spire";
 
 	private static final EntityDataAccessor<Integer> FUEL = SynchedEntityData.defineId(EntitySpire.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<String> NAMES = SynchedEntityData.defineId(EntitySpire.class, EntityDataSerializers.STRING);
@@ -42,8 +42,8 @@ public class EntitySpire extends Entity {
 	public void tick() {
 		super.tick();
 
-		if (getNames() == null) {
-			setNames(TokenNames.getNamesOfPos(getOnPos()));
+		if (getNames().equals("null")) {
+			setNames(TokenNames.getNamesOfPos(getSpireExtractPos()));
 		}
 
 //		if (Math.random() < .1)
@@ -51,9 +51,9 @@ public class EntitySpire extends Entity {
 
 		Vec3 pos = position();
 		BlockPos blockpos = getOnPos();
-		BlockState spire = level.getBlockState(blockpos);
+		BlockState bs = level.getBlockState(blockpos);
 
-		if (spire == null || spire.getBlock() != HearthWell.spire) {
+		if (bs == null || bs.getBlock() != HearthWell.spire) {
 			kill();
 		}
 
@@ -63,15 +63,19 @@ public class EntitySpire extends Entity {
 			if (getNames().equals(""))
 				kill();
 			else
-				serverTick(pos, blockpos, spire);
+				serverTick(pos, blockpos, bs);
 		}
+	}
+
+	private BlockPos getSpireExtractPos() {
+		return getOnPos().below();
 	}
 
 	private void serverTick(Vec3 pos, BlockPos blockpos, BlockState spire) {
 		List<ItemEntity> entities = level.getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(.3));
 		for (ItemEntity itemEntity : entities) {
 			if (itemEntity.getItem().getItem() == HearthWell.myst_dust) {
-				setFuel(getFuel() + itemEntity.getItem().getCount() * 100);
+				setFuel(getFuel() + itemEntity.getItem().getCount() * 20);
 				itemEntity.kill();
 			}
 		}
@@ -143,16 +147,13 @@ public class EntitySpire extends Entity {
 	}
 
 	public boolean hasName(int n) {
-		String names = getNames();
-		if (names == null)
-			return false;
-		return TokenNames.containsNameIndex(names, n);
+		return TokenNames.containsNameIndex(getNames(), n);
 	}
 
 	@Override
 	protected void defineSynchedData() {
 		entityData.define(FUEL, 0);
-		entityData.define(NAMES, null);
+		entityData.define(NAMES, "null");
 	}
 
 	@Override

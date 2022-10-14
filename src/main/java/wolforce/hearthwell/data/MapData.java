@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,16 +27,24 @@ import wolforce.hearthwell.data.recipes.RecipeTransformation;
 
 public class MapData implements Serializable {
 
-	public static transient final int timeSmall = 6; // TODO change to 60
-	public static transient final int timeMedium = 6; // TODO change to 120
-	public static transient final int timeLarge = 6; // TODO change to 300
+	public static transient final int timeVerySmall = 20;
+	public static transient final int timeSmall = 60;
+	public static transient final int timeMedium = 120;
+	public static transient final int timeLarge = 300;
 
-	public transient static MapData DATA;
+	private transient static MapData _DATA;
+
+	public static MapData DATA() {
+		if (_DATA == null)
+			loadData();
+		return _DATA;
+	}
+
 	public transient int minX = 0, minY = 0, maxX = 0, maxY = 0;
 
 	private transient static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 	private transient static final String CONFIG_FILE = "hearthwell_mapdata.json";
-	private transient static final long serialVersionUID = HearthWell.VERSION.hashCode();
+	private transient static final long serialVersionUID = HearthWell.NETDATA_VERSION.hashCode();
 	private transient HashMap<Short, MapNode> nodesByPosition;
 
 	public final HashMap<String, MapNode> nodes = new HashMap<>();
@@ -53,21 +62,9 @@ public class MapData implements Serializable {
 	public final LinkedList<RecipeCoring> recipes_coring = new LinkedList<>();
 	public final LinkedList<RecipeReacting> recipes_reacting = new LinkedList<>();
 
-	public final LinkedList<LinkedList<? extends RecipeHearthWell>> allRecipes = new LinkedList<>();
+	public transient final LinkedList<LinkedList<? extends RecipeHearthWell>> allRecipes = new LinkedList<>();
 
-	public MapData() {
-		allRecipes.add(recipes_flare);
-		allRecipes.add(recipes_influence);
-		allRecipes.add(recipes_transformation);
-		allRecipes.add(recipes_handitem);
-		allRecipes.add(recipes_burst);
-		allRecipes.add(recipes_crushing);
-		allRecipes.add(recipes_combining);
-		allRecipes.add(recipes_coring);
-		allRecipes.add(recipes_reacting);
-	}
-
-	private MapData createBaseNode() {
+	private void createBaseNode() {
 		boolean pureFlareExists = false;
 		for (RecipeFlare recipe : recipes_flare)
 			pureFlareExists = pureFlareExists || recipe.recipeId.equals("pure_flare");
@@ -82,7 +79,6 @@ public class MapData implements Serializable {
 						+ "You can manipulate these flares with a Flare Torch./n"
 						+ "Flares may react in particular ways when touching certain blocks on the world or when nearby players with certain items on hand.", //
 				recipes, array(), array());
-		return this;
 	}
 
 	private MapData addDefaults() {
@@ -139,26 +135,26 @@ public class MapData implements Serializable {
 		// UP FROM BURST SEEDS
 		//
 
-		addNode("burst_seed", 0, -4, "Burst seeds", timeMedium, "hearthwell:burst_seed", //
+		addNode("burst_seed", 1, -4, "Burst seeds", timeMedium, "hearthwell:burst_seed", //
 				"A surprising burst of resources!",
-				"Burst Seeds are an easy albeit unstable way to multiply resources./nSimply place then down, and start adding the resources you want to multiply./nEach resource you add decreases the stability of the burst seed, and increases the chance of it blowing up./nWhen the burst seed is highly unstable you might want to let it/ncool down before adding to it again.", // descriptions
+				"Burst Seeds are an easy albeit unstable way to multiply resources./nSimply place then down, and start adding the resource you want to multiply./nEach item you add decreases the stability of the burst seed, and increases the chance of it blowing up./nWhen the burst seed is highly unstable you might want to let it/ncool down before adding to it again.", // descriptions
 				array("recipe_burst_seed"), // recipes
 				array("on_growth"), array("hearthwell:inert_seed")); // parents / required items
 
+		addNode("rapid_growth", -1, -4, "Rapid Growth", timeSmall, "hearthwell:fertile_soil", //
+				"Create a new better soil for the growth of plant life.", //
+				"Fertile Soil is a special type of soil which will speed up/nthe growth of plants on top of it, but cannot be tilled./nIt's a great way to easily get wood quickly.", //
+				array("recipe_fertile_soil"), // recipes
+				array("on_growth"), array("#minecraft:saplings|#minecraft:seeds", "#minecraft:dirt"), false);
+//
 		//
-		// LEFT FROM SPIRES
+		// LEFT
 		//
-
-		addNode("spires", -4, 0, "Spires and Devices", 0, "hearthwell:spire", //
-				"Concentrated energy locations.", //
-				"Spires are physical structures that help burn the mystical energies/non mysterious dust that is thrown into them./nMany blocks in the world are capable of burning mysterious energies,/nand the tokens shining all around the spire let you know/nwhich types of energies that spire can burn./n(These are related to which token names can be created/nfrom the token letter at that location.)/n/nSpire Devices utilize the mysterious energies from burning dust in a spire./nTo choose which energy the spire device will use,/n right click it with the specific token./n", //
-				array(), // recipes
-				array(), array("hearthwell:myst_ingot")); // parents / required items
 
 		addNode("core_infuser", -4, 2, "Core Infuser Spire Device", timeMedium, "hearthwell:spire_device_core_turning", //
 				"Some serious transformations",
 				"The Core Infuser takes those energies and injects them directly/ninto the core that is placed above it. /nAfter some time, this will turn the core into some useful resources./nWhich resources it creates depends on the core, but also on the/ntype of energy that was given to the device.", // descriptions
-				array("recipe_coal_from_core", "recipe_iron_from_core", "recipe_copper_from_core", "recipe_gold_from_core"), // recipes
+				array("recipe_activate_core_rock", "recipe_coal_from_core", "recipe_iron_from_core", "recipe_copper_from_core", "recipe_gold_from_core"), // recipes
 				array("on_rarity"), array("hearthwell:myst_container")); // parents / required items
 
 		addNode("coal", -2, 3, "Ores", timeMedium, "minecraft:coal_ore", //
@@ -169,16 +165,16 @@ public class MapData implements Serializable {
 		addNode("expert_coring", -6, 3, "Expert Coring", timeMedium, "minecraft:redstone", //
 				"More mineral resources", "", // descriptions
 				array("recipe_redstone_from_core", "recipe_lapis_from_core"), // recipes
-				array("core_infuser"), array("minecraft:raw_iron", "minecraft:raw_gold", "minecraft:raw_copper")); // parents / required
+				array("core_infuser"), array("minecraft:raw_iron|minecraft:raw_gold|minecraft:raw_copper")); // parents / required
 
 		addNode("on_refinement", -8, 3, "On Refinement", timeMedium, "flare_refinement", //
 				"Refined rocks", "A flare to embetter your minerals and make them shiny.", // descriptions
 				array("flare_refinement", "recipe_cyan_crystal"), // recipes
 				array("expert_coring"), array("minecraft:redstone")); // parents / required items
 
-		addNode("core_crystal", -10, 4, "Crystal Core", timeMedium, "hearthwell:core_crystal_activated", //
+		addNode("core_crystal", -10, 4, "Crystal Core", timeLarge, "hearthwell:core_crystal_activated", //
 				"Precious colors", "The crystal core is a more refined and precious version of the Rock Core./nYou will be able to infuse it to create much rarer and precious minerals", // descriptions
-				array("recipe_activate_core_crystal", "recipe_diamond_from_core", "recipe_emerald_from_core"), // recipes
+				array("recipe_activate_core_crystal", "recipe_diamond_from_core", "recipe_emerald_from_core", "recipe_amethist_from_core", "recipe_quartz_from_core"), // recipes
 				array("on_refinement"), array("minecraft:lapis_lazuli")); // parents / required items
 
 		//
@@ -302,7 +298,7 @@ public class MapData implements Serializable {
 
 	private void addDefaultTransformationRecipes() {
 
-		recipes_transformation.add(new RecipeTransformation("recipe_fertile_soil", "flare_life", "minecraft:dirt", "hearthwell:fertile_soil"));
+		recipes_transformation.add(new RecipeTransformation("recipe_fertile_soil", "flare_growth", "minecraft:dirt|minecraft:grass_block", "hearthwell:fertile_soil"));
 		recipes_transformation.add(new RecipeTransformation("recipe_myst_grass_2", "pure_flare", "minecraft:dirt|minecraft:grass_block", "hearthwell:myst_grass"));
 		recipes_transformation.add(new RecipeTransformation("recipe_crystal_ore_black_2", "pure_flare", "minecraft:blackstone", "hearthwell:crystal_ore_black"));
 		recipes_transformation.add(new RecipeTransformation("recipe_crystal_ore_2", "pure_flare", "#minecraft:base_stone_overworld", "hearthwell:crystal_ore"));
@@ -314,18 +310,20 @@ public class MapData implements Serializable {
 		recipes_transformation.add(new RecipeTransformation("recipe_diorite_from_deepslate", "flare_reaction", "minecraft:cobbled_deepslate", "minecraft:diorite"));
 		recipes_transformation.add(new RecipeTransformation("recipe_obsidian_from_stone", "flare_harden", "#stone_crafting_materials", "minecraft:obsidian"));
 
-		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_anima", "pure_flare", "hearthwell:core_anima", "hearthwell:core_anima_activated"));
-		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_crystal", "pure_flare", "hearthwell:core_crystal", "hearthwell:core_crystal_activated"));
-		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_heat", "pure_flare", "hearthwell:core_heat", "hearthwell:core_heat_activated"));
-		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_rotten", "pure_flare", "hearthwell:core_rotten", "hearthwell:core_rotten_activated"));
-		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_soft", "pure_flare", "hearthwell:core_soft", "hearthwell:core_soft_activated"));
-		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_verdant", "pure_flare", "hearthwell:core_verdant", "hearthwell:core_verdant_activated"));
-		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_rock", "pure_flare", "hearthwell:core_rock", "hearthwell:core_rock_activated"));
+		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_anima", "flare_rarity", "hearthwell:core_anima", "hearthwell:core_anima_activated"));
+		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_crystal", "flare_rarity", "hearthwell:core_crystal", "hearthwell:core_crystal_activated"));
+		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_heat", "flare_rarity", "hearthwell:core_heat", "hearthwell:core_heat_activated"));
+		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_rotten", "flare_rarity", "hearthwell:core_rotten", "hearthwell:core_rotten_activated"));
+		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_soft", "flare_rarity", "hearthwell:core_soft", "hearthwell:core_soft_activated"));
+		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_verdant", "flare_rarity", "hearthwell:core_verdant", "hearthwell:core_verdant_activated"));
+		recipes_transformation.add(new RecipeTransformation("recipe_activate_core_rock", "flare_rarity", "hearthwell:core_rock", "hearthwell:core_rock_activated"));
 
 	}
 
 	private void addDefaultCrushingRecipes() {
 		recipes_crushing.add(new RecipeCrushing("recipe_petrified_wood_dust", "hearthwell:petrified_wood_chunk", "4*hearthwell:petrified_wood_dust"));
+		recipes_crushing.add(new RecipeCrushing("recipe_crushing_gravel", "minecraft:cobblestone", "minecraft:gravel"));
+		recipes_crushing.add(new RecipeCrushing("recipe_crushing_sand", "minecraft:gravel", "minecraft:sand"));
 
 	}
 
@@ -343,6 +341,7 @@ public class MapData implements Serializable {
 		recipes_coring.add(new RecipeCoring("recipe_diamond_from_core", "hearthwell:core_crystal_activated", 6, 1000, "3*minecraft:diamond"));
 		recipes_coring.add(new RecipeCoring("recipe_emerald_from_core", "hearthwell:core_crystal_activated", 8, 1000, "3*minecraft:emerald"));
 		recipes_coring.add(new RecipeCoring("recipe_amethist_from_core", "hearthwell:core_crystal_activated", 10, 1000, "8*minecraft:amethyst_shard"));
+		recipes_coring.add(new RecipeCoring("recipe_quartz_from_core", "hearthwell:core_crystal_activated", 3, 1000, "4*minecraft:quartz|5*minecraft:quartz|6*minecraft:quartz|7*minecraft:quartz"));
 	}
 
 	private void addDefaultReactingRecipes() {
@@ -351,47 +350,102 @@ public class MapData implements Serializable {
 
 	private void addDefaultCenterNodes() {
 		{
-			addNode("magical_plants", -2, -1, "Magical Plants", timeSmall, "hearthwell:myst_grass", //
+			addNode("magical_plants", -2, -1, "Magical Plants", timeVerySmall, "hearthwell:myst_grass", //
 					"The Hearth Well can give life and magic.", //
 					"Nearby grass absorbs the mysterious energies and changes colour.", //
 					array("recipe_myst_grass", "recipe_myst_grass_2"), // recipes
 					array("hearthwell"), array());
 
-			addNode("petrification", 2, -1, "Petrification", timeSmall, "hearthwell:petrified_wood", //
+			addNode("petrification", 2, -1, "Petrification", timeVerySmall, "hearthwell:petrified_wood", //
 					"The Hearth Well can also take away life and magic.", //
 					"Nearby wood petrifies and becomes harder and brittle.", //
 					array("recipe_petrified_wood", "recipe_petrified_wood_2"), // recipes
 					array("hearthwell"), array());
 
-			addNode("crystal_formation", 0, 2, "Crystal Formation", timeSmall, "hearthwell:crystal", //
+			addNode("crystal_formation", 0, 2, "Crystal Formation", timeVerySmall, "hearthwell:crystal", //
 					"Nearby stone begins to transform into some sort of Mysterious Crystal.", //
 					"Stone near the Hearth Well is influenced by it./nIt absorbs the mysterious energies and has a chance/nto transform into crystal ore.", //
 					array("recipe_crystal_ore", "recipe_crystal_ore_black", "recipe_crystal_ore_2", "recipe_crystal_ore_black_2"), // recipes
 					array("hearthwell"), array());
 
-			addNode("on_reactions", 2, 1, "On Reactions", timeSmall, "flare_reaction", //
+			addNode("on_reactions", 2, 1, "On Reactions", timeVerySmall, "flare_reaction", //
 					"A flare to alter the natural interactions.", //
 					"A flare to alter the natural interactions.", //
 					array("flare_reaction", "recipe_red_crystal"), // recipes
 					array("crystal_formation", "petrification"), array("#coals"));
 
-			addNode("on_rarity", -2, 1, "On Rarity", timeSmall, "flare_rarity", //
+			addNode("on_rarity", -2, 1, "On Rarity", timeVerySmall, "flare_rarity", //
 					"A flare to increase the value of worldly possessions.", //
 					"A flare to increase the value of worldly possessions.", //
 					array("flare_rarity", "recipe_blue_crystal"), // recipes
 					array("magical_plants", "crystal_formation"), array("hearthwell:crystal"));
 
-			addNode("on_growth", 0, -2, "On Growth", timeSmall, "flare_growth", //
+			addNode("on_growth", 0, -2, "On Growth", timeVerySmall, "flare_growth", //
 					"A flare to speed up life.", //
 					"A flare to speed up life.", //
 					array("flare_growth", "recipe_green_crystal"), // recipes
 					array("magical_plants", "petrification"), array("#minecraft:saplings"));
+
+			addNode("spires", -4, 0, "Spires and Devices", timeVerySmall, "hearthwell:spire", //
+					"Concentrated energy locations.", //
+					"Spires are physical structures that help burn the mystical energies/n" + //
+							"on mysterious dust that is thrown into them./n" + //
+							"Many blocks in the world are capable of burning mysterious energies,/n" + //
+							"and the tokens shining all around the spire let you know/n" + //
+							"which types of energies that spire can burn./n" + //
+							"(These are related to which token names can be created/n" + //
+							"from the token letter BELOW that location.)/n" + //
+							"/n" + //
+							"Spire Devices utilize the mysterious energies from burning dust in a spire./n" + //
+							"To choose which energy the spire device will use, /n" + //
+							"right click a spire device with a token token./n" + //
+							"You will also gain some myst energy this way./n", //
+					array(), // recipes
+					array(), array("hearthwell:myst_ingot")); // parents / required items
+
+			addNode("tokens", 4, 0, "Tokens and Letters", timeVerySmall, "hearthwell:token_base", //
+					"True names of locations.", //
+					"Tokens are symbols of the different types of mystical energy/n" + //
+							"that flows in the world and permeates every block./n" + //
+							"To get a token, simply write its name using the letters/n" + //
+							"provided by the world./n" + //
+							"/n" + //
+							"Right click any block with a token/n" + //
+							"to discover which letter that block provides./n" + //
+							"Each position will always give you the same letter,/n" + //
+							"even if you change the block on it./n" + //
+							"/n" + //
+							"For a more permanent solution, use Token Chalk to/n" + //
+							"inscribe the letter permanently onto that block./n", //
+					array(), // recipes
+					array(), array("hearthwell:token_base")); // parents / required items
+
+			addNode("myst_containers", 6, 0, "Myst Containers", timeSmall, "hearthwell:myst_container", //
+					"Holders of mystical energies.", //
+							"Myst containers can hold a small amount of the mysterious energy/n" + //
+							"generated by the spires. Simply right click a Spire Device with/n" + //
+							"an empty container to store the energy. Right click again to/n" + //
+							"insert it back into the device./n" + //
+							"/n", //
+					array(), // recipes
+					array("tokens"), array("hearthwell:myst_container")); // parents / required items
+
 		}
 	}
 
-	public MapData init() {
+	public void init() {
 
 		mapNodesByPosition();
+
+		allRecipes.add(recipes_flare);
+		allRecipes.add(recipes_influence);
+		allRecipes.add(recipes_transformation);
+		allRecipes.add(recipes_handitem);
+		allRecipes.add(recipes_burst);
+		allRecipes.add(recipes_crushing);
+		allRecipes.add(recipes_combining);
+		allRecipes.add(recipes_coring);
+		allRecipes.add(recipes_reacting);
 
 		for (MapNode node : nodes.values()) {
 			node.init();
@@ -402,6 +456,15 @@ public class MapData implements Serializable {
 					new HearthWellException(recipeId + " is missing!").printStackTrace();
 				} else
 					recipe.init(this, node);
+			}
+		}
+
+		for (LinkedList<? extends RecipeHearthWell> linkedList : allRecipes) {
+			for (RecipeHearthWell recipeHearthWell : linkedList) {
+				if (!recipeHearthWell.isInnited()) {
+					recipeHearthWell.init(this, null);
+					System.err.println(recipeHearthWell.recipeId + " is not part of any node!");
+				}
 			}
 		}
 
@@ -431,7 +494,6 @@ public class MapData implements Serializable {
 		minX = Math.abs(minX);
 		minY = Math.abs(minY);
 
-		return this;
 	}
 
 	public RecipeHearthWell getRecipeById(String recipeId) {
@@ -486,10 +548,10 @@ public class MapData implements Serializable {
 
 	public void addNode(String id, int x, int y, String name, int time, String stack, String description, String fullDescription, String[] recipes, String[] connections, String[] required_items,
 			boolean write) {
-		nodes.put(id, new MapNode((byte) x, (byte) y, name, time, stack, description, fullDescription, recipes, connections, required_items));
+		MapNode newNode = new MapNode((byte) x, (byte) y, name, time, stack, description, fullDescription, recipes, connections, required_items);
+		nodes.put(id, newNode);
 		if (write) {
-			init();
-			writeData(this);
+			refreshWrittenFile();
 		}
 	}
 
@@ -502,17 +564,14 @@ public class MapData implements Serializable {
 				iterator.remove();
 		}
 
-		if (write) {
-			init();
-			writeData(this);
-		}
+		if (write)
+			refreshWrittenFile();
 	}
 
 	public void changeNodeId(MapNode node, String id) {
 		removeNode(node.x, node.y, false);
 		nodes.put(id, node);
-		init();
-		writeData(this);
+		refreshWrittenFile();
 	}
 
 	public MapNode getHwNode() {
@@ -559,55 +618,47 @@ public class MapData implements Serializable {
 	//
 	//
 	//
+	private void refreshWrittenFile() {
+		init();
+		writeData(this);
+	}
 
 	public static void loadData() {
-		DATA = readData();
-		DATA.createBaseNode();
-		DATA.init();
-		if (DATA == null)
+		_DATA = readData();
+		if (_DATA == null)
 			throw new RuntimeException("Could not load Hearth Well data successfully from config " + CONFIG_FILE);
+		_DATA.createBaseNode();
+		_DATA.init();
 	}
 
 	public static MapData readData() {
 		BufferedReader reader = null;
 		File file = new File("config", CONFIG_FILE);
-		if (!file.exists()) {
-			return writeDefaultData();
+		if (file.exists()) {
+			try {
+				reader = new BufferedReader(new FileReader(file));
+				return ((MapData) gson.fromJson(reader, MapData.class));
+				// @f--
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			} finally {
+				if (reader != null)
+					try {
+						reader.close();
+					} catch (Exception e) {
+					}
+			} // @f++
 		}
-		try {
-			reader = new BufferedReader(new FileReader(file));
-			return ((MapData) gson.fromJson(reader, MapData.class)) //
-					.createBaseNode() //
-					.init(); //
-			// @f--
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (reader != null)
-				try {
-					reader.close();
-				} catch (Exception e) {
-				}
-		} // @f++
-		return null;
-	}
-
-	public static MapData writeDefaultData() {
-		return writeData( //
-				new MapData() //
-						.createBaseNode() //
-						.addDefaults() //
-						.init() //
-		);
+		return writeData(new MapData().addDefaults());
 	}
 
 	public static MapData writeData(MapData data) {
 		BufferedWriter writer = null;
 		try {
-			// TODO
-//			writer = new BufferedWriter(new FileWriter(new File("config", CONFIG_FILE)));
-//			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//			writer.write(gson.toJson(data));
+			writer = new BufferedWriter(new FileWriter(new File("config", CONFIG_FILE)));
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			writer.write(gson.toJson(data));
 			return data;
 			// @f--
 		} catch (Exception e) {
@@ -623,7 +674,7 @@ public class MapData implements Serializable {
 	}
 
 	public static class HearthWellException extends Exception {
-		private static final long serialVersionUID = HearthWell.VERSION.hashCode();
+		private static final long serialVersionUID = HearthWell.NETDATA_VERSION.hashCode();
 
 		public HearthWellException(String message) {
 			super(message);

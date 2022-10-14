@@ -1,0 +1,28 @@
+{
+  "replace": false,
+  "values": [
+    "hearthwell:crystal_ore",
+    "hearthwell:crystal_ore_black",
+    "hearthwell:spire",
+    "hearthwell:myst_container",
+    "hearthwell:spire_device_core_turning",
+    "hearthwell:spire_device_core_turning",
+    "hearthwell:spire_device_combiner",
+    "hearthwell:spire_device_reactor",
+    "hearthwell:petrified_wood",
+    "hearthwell:core_anima_activated",
+    "hearthwell:core_crystal_activated",
+    "hearthwell:core_heat_activated",
+    "hearthwell:core_rock_activated",
+    "hearthwell:core_rotten_activated",
+    "hearthwell:core_soft_activated",
+    "hearthwell:core_verdant_activated",
+    "hearthwell:core_anima",
+    "hearthwell:core_crystal",
+    "hearthwell:core_heat",
+    "hearthwell:core_rock",
+    "hearthwell:core_rotten",
+    "hearthwell:core_soft",
+    "hearthwell:core_verdant"
+  ]
+}

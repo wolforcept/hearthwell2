@@ -163,6 +163,7 @@ public class ScreenHearthWellMap extends Screen {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 
+		MapData DATA = DATA();
 		if (selectedNode == null) {
 
 			byte x = (byte) Math.floor((mouseX - dx) / S);
@@ -186,6 +187,7 @@ public class ScreenHearthWellMap extends Screen {
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		MapData DATA = DATA();
 
 		if (selectedNode == null) {
 			if (EDIT_MODE && button == 2) {
@@ -222,6 +224,7 @@ public class ScreenHearthWellMap extends Screen {
 
 	@Override
 	public boolean mouseDragged(double mouseX, double mouseY, int button, double _dragX, double _dragY) {
+		MapData DATA = DATA();
 
 		if (selectedNode == null) {
 //		boolean ret = super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
@@ -296,6 +299,7 @@ public class ScreenHearthWellMap extends Screen {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void render(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+		MapData DATA = DATA();
 
 //		RenderSystem.disableLighting();
 //		RenderSystem.defaultAlphaFunc();
@@ -416,6 +420,7 @@ public class ScreenHearthWellMap extends Screen {
 	}
 
 	private void renderLineToParentsOf(MapNode node) {
+		MapData DATA = DATA();
 		if (node != null && node.parent_ids.length != 0) {
 			for (String parentId : node.parent_ids) {
 				MapNode parent = DATA.getNode(parentId);
@@ -442,8 +447,11 @@ public class ScreenHearthWellMap extends Screen {
 		} else {
 			boolean renderItems = false;
 			if (node.hash() == MapNode.hash(hearthwell.getResearchNode())) {
+				double percentage = (Math.round(hearthwell.getResearchPercent() * 1000) / 10.0);
 				if (hearthwell.hasItems())
-					texts.add("Researching: " + (Math.round(hearthwell.getResearchPercent() * 1000) / 10.0) + "%");
+					texts.add("Researching: " + percentage + "%");
+				else if (percentage > 0)
+					texts.add(percentage + "%. Not able to continue research.");
 				else
 					texts.add("Not able to research.");
 				renderItems = true;
@@ -604,6 +612,7 @@ public class ScreenHearthWellMap extends Screen {
 		int page = 0;
 
 		public SelectedNode(String nodeId, MapNode node, boolean isEdit) {
+			MapData DATA = DATA();
 
 			this.nodeId = nodeId;
 			this.node = node;
@@ -666,10 +675,10 @@ public class ScreenHearthWellMap extends Screen {
 					if (recipe != null) {
 						int secs = (int) (System.currentTimeMillis() / 1500);
 						RenderSystem.enableBlend();
-						RenderSystem.setShaderTexture(0, recipe.texture);
-						int recipeX = width / 2 - recipe.width / 2;
+						RenderSystem.setShaderTexture(0, recipe.getTexture());
+						int recipeX = width / 2 - recipe.getWidth() / 2;
 						int recipeY = yy + 60;
-						GuiComponent.blit(matrix, recipeX, recipeY, 0, 0, recipe.width, recipe.height, recipe.width, recipe.height);
+						GuiComponent.blit(matrix, recipeX, recipeY, 0, 0, recipe.getWidth(), recipe.getHeight(), recipe.getWidth(), recipe.getHeight());
 						new RecipeRenderer(ScreenHearthWellMap.this, new Vec2(mouseX, mouseY), matrix, secs, recipeX, recipeY).render(recipe);
 					} else {
 						String line3 = "Recipe not found.";
@@ -688,6 +697,7 @@ public class ScreenHearthWellMap extends Screen {
 		}
 
 		public void save() {
+			MapData DATA = DATA();
 
 			String id = fields[0].getValue();
 			DATA.changeNodeId(node, id);

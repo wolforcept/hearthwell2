@@ -1,5 +1,7 @@
 package wolforce.hearthwell.blocks;
 
+import static wolforce.hearthwell.data.MapData.DATA;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,7 +20,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import wolforce.hearthwell.bases.BaseBlock;
 import wolforce.hearthwell.blocks.tiles.BeBurstSeed;
-import wolforce.hearthwell.data.MapData;
 import wolforce.hearthwell.data.recipes.RecipeBurstSeed;
 import wolforce.utils.stacks.UtilItemStack;
 
@@ -31,11 +32,9 @@ public class BlockBurstSeed extends BaseBlock implements EntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-			BlockHitResult hit) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 
-		if (isBurstRecipe(player.getItemInHand(hand))
-				|| !UtilItemStack.isValid(player.getItemInHand(InteractionHand.MAIN_HAND))) {
+		if (isBurstRecipe(player.getItemInHand(hand)) || !UtilItemStack.isValid(player.getItemInHand(InteractionHand.MAIN_HAND))) {
 			if (!world.isClientSide) {
 				BeBurstSeed te = (BeBurstSeed) world.getBlockEntity(pos);
 				player.setItemInHand(hand, te.tryAddItem(player, player.getItemInHand(hand)));
@@ -47,7 +46,7 @@ public class BlockBurstSeed extends BaseBlock implements EntityBlock {
 	}
 
 	private boolean isBurstRecipe(ItemStack stack) {
-		for (RecipeBurstSeed recipe : MapData.DATA.recipes_burst) {
+		for (RecipeBurstSeed recipe : DATA().recipes_burst) {
 			if (recipe.matches(stack))
 				return true;
 		}
@@ -72,8 +71,7 @@ public class BlockBurstSeed extends BaseBlock implements EntityBlock {
 	}
 
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level _level, BlockState _blockState,
-			BlockEntityType<T> type) {
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level _level, BlockState _blockState, BlockEntityType<T> type) {
 		return (Level level, BlockPos pos, BlockState blockState, T te) -> {
 			if (te instanceof BeBurstSeed)
 				((BeBurstSeed) te).tick(level, pos, blockState);

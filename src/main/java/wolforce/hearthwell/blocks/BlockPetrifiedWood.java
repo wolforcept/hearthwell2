@@ -18,10 +18,8 @@ public class BlockPetrifiedWood extends BaseBlock {
 	@Override
 	public List<ItemStack> getDrops(BlockState state, Builder builder) {
 		List<ItemStack> drops = new ArrayList<>();
-		drops.add(new ItemStack(HearthWell.petrified_wood_chunk, (int) (3 + Math.random() * 4)));
+		drops.add(new ItemStack(HearthWell.petrified_wood_chunk, (int) (3 + Math.random() * 6)));
 		return drops;
 	}
 
-	
-	
 }

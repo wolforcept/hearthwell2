@@ -1,19 +1,19 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-		"ABA",
-		"BCB",
-		"ABA"
+		"DAD",
+		"ACA",
+		"DAD"
 	],
 	"key": {
-		"A": {
-			"item": "minecraft:stone"
-		},
-		"B": {
-			"item": "minecraft:cobblestone"
-		},
 		"C": {
-			"item": "hearthwell:crystal"
+			"item": "minecraft:brain_coral_block"
+		},
+		"A": {
+			"item": "minecraft:amethyst_shard"
+		},
+		"D": {
+			"item": "minecraft:popped_chorus_fruit"
 		}
 	},
 	"result": {

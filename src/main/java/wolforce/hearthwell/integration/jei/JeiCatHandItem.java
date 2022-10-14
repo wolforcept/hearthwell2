@@ -1,5 +1,7 @@
 package wolforce.hearthwell.integration.jei;
 
+import static wolforce.hearthwell.data.MapData.DATA;
+
 import java.util.List;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -18,6 +20,7 @@ public class JeiCatHandItem extends JeiCat<RecipeHandItem> {
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, RecipeHandItem recipe, IFocusGroup focuses) {
+		DATA();
 		builder.addSlot(RecipeIngredientRole.INPUT, 6, 6).addIngredients(IngredientFlare.INGREDIENT_TYPE, IngredientFlare.get(recipe.flareType));
 		builder.addSlot(RecipeIngredientRole.INPUT, 36, 34).addItemStacks(recipe.getInputStack());
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 83, 37).addItemStacks(recipe.getOutputStacksFlat());
@@ -25,7 +28,8 @@ public class JeiCatHandItem extends JeiCat<RecipeHandItem> {
 
 	@Override
 	public List<RecipeHandItem> getAllRecipes() {
-		return MapData.DATA.recipes_handitem;
+		MapData DATA = DATA();
+		return DATA.recipes_handitem;
 	}
 
 }

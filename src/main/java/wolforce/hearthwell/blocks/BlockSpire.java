@@ -21,7 +21,7 @@ public class BlockSpire extends BaseBlock {
 
 	@Override
 	public void onPlace(BlockState state, Level world, BlockPos pos, BlockState prevState, boolean isMoving) {
-		if (!world.isClientSide && !TokenNames.getNamesOfPos(pos).equals("")) {
+		if (!world.isClientSide && !TokenNames.getNamesOfPos(pos.below()).equals("")) {
 			EntitySpire ent = new EntitySpire(world);
 			ent.setPos(pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f);
 			world.addFreshEntity(ent);

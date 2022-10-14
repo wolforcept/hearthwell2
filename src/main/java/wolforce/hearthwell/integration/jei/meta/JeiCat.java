@@ -6,6 +6,7 @@ import java.util.List;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
@@ -18,10 +19,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import wolforce.hearthwell.data.RecipeHearthWell;
 import wolforce.utils.Util;
 import wolforce.utils.stacks.UtilItemStack;
 
-public abstract class JeiCat<T> implements IRecipeCategory<T> {
+public abstract class JeiCat<T extends RecipeHearthWell> implements IRecipeCategory<T> {
 
 	public static IJeiHelpers helpers;
 
@@ -51,13 +53,24 @@ public abstract class JeiCat<T> implements IRecipeCategory<T> {
 		this.h = h;
 
 		this.back = helpers.getGuiHelper().drawableBuilder(texture, 0, 0, w, h).setTextureSize(w, h).build();
-		this.icon = helpers.getGuiHelper().createDrawableIngredient(VanillaTypes.ITEM_STACK,
-				UtilItemStack.stack(iconStack));
+		this.icon = helpers.getGuiHelper().createDrawableIngredient(VanillaTypes.ITEM_STACK, UtilItemStack.stack(iconStack));
 
 		catalysts = new LinkedList<>();
 		if (isToAddIconAsCatalyst())
 			catalysts.add(UtilItemStack.stack(iconStack));
 
+	}
+
+	@Override
+	public List<Component> getTooltipStrings(T recipe, IRecipeSlotsView slots, double mouseX, double mouseY) {
+		List<Component> list = new LinkedList<>();
+		if (mouseX > w - 8 && mouseY < 8) {
+			if (recipe.mapNode != null)
+				list.add(new TextComponent("Requires Research: " + recipe.mapNode.name));
+			else
+				list.add(new TextComponent("Does not require Research."));
+		}
+		return list;
 	}
 
 //	@Override

@@ -63,6 +63,14 @@ public class RecipeRenderer {
 			renderRecipe(recipe);
 		else if (_recipe instanceof RecipeTransformation recipe)
 			renderRecipe(recipe);
+
+		if (mousePos.y - this.y > 0 && mousePos.y - this.y - 8 < 0 && //
+				mousePos.x - this.x - _recipe.getWidth() + 8 > 0 && mousePos.x - this.x - _recipe.getWidth() < 0) {
+			String text = _recipe.mapNode != null ? "Requires Research: " + _recipe.mapNode.name : "Does not require Research.";
+			mapScreen.renderComponentTooltip(new PoseStack(), UtilList.of(new TextComponent(text)), (int) mousePos.x, (int) mousePos.y);
+
+		}
+
 	}
 
 	private void renderRecipe(RecipeBurstSeed recipe) {
@@ -108,7 +116,7 @@ public class RecipeRenderer {
 	private void renderRecipe(RecipeHandItem recipe) {
 		renderStacks(recipe.getInputStack(), 36, 34);
 		renderStacks(recipe.getOutputStacksFlat(), 83, 37);
-		renderFlare(recipe.recipeId, x, y);
+		renderFlare(recipe.flareType, 7, 7);
 	}
 
 	private void renderRecipe(RecipeInfluence recipe) {

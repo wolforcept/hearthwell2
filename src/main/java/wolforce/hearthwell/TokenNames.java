@@ -170,7 +170,7 @@ public class TokenNames {
 	//
 
 	private static final char[] chars = { 'A', 'E', 'I', 'O', 'U', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-			'⚔', '☠', '☀', '☁', '☽', '♀', '♂', '♠', '♣', '♥', '♦', '♪', '♫', '♬', '⚠', '⚡', '⛏', '❄', '❌', '❤', 'ᘔ', 'Ɛ', '⏺', '⚓', '⛨', };
+			'⚔', '☠', '☀', '☁', '☽', '♀', '♂', '♠', '♣', '♥', '♦', '♪', '♫', '♬', '⚠', '⚡', '⛏', '❄', '❌', '❤', 'ᘔ', 'Ɛ', '⏺', '⚓', '⛨' };
 
 	public static char getLetterOfPos(BlockPos blockpos) {
 		return chars[new Random((blockpos.getX() + "" + blockpos.getY() + "" + blockpos.getZ()).hashCode()).nextInt(chars.length)];
@@ -197,7 +197,7 @@ public class TokenNames {
 		return "." + n + ".";
 	}
 
-	private static final int[] tokenColours = { 0xFF00FF00, 0xFF4488FF, 0xFFFF0000, 0xFF999999, 0xFF664422, 0xFFFF00FF, 0xFF0000FF, 0xFFFFFF00, 0xFF00FFFF, 0xFF6600FF, 0xFFFF4488, 0xFFFF8800,
+	private static final int[] tokenColours = { 0xFF00FF00, 0xFF4488FF, 0xFFFF0000, 0xFF888866, 0xFF664422, 0xFFFF00FF, 0xFF0000FF, 0xFFFFFF00, 0xFF00FFFF, 0xFF6600FF, 0xFFFF4488, 0xFFFF8800,
 			0xFFFFFFFF, };
 
 	public static int getColorOfToken(int fuelType) {

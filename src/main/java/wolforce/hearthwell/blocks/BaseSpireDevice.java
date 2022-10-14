@@ -67,10 +67,12 @@ public abstract class BaseSpireDevice extends BaseBlock implements BlockHasRende
 
 		if (heldItem.getItem() instanceof ItemTokenOf tokenOf && HearthWell.getTokenItems().contains(tokenOf)) {
 
-			if (entity.getFuel() <= 0) {
-				entity.trySetFuelType(tokenOf.i);
-				entity.tryAddFuel(1);
-				return InteractionResult.SUCCESS;
+			if (entity.getFuel() <= 1) {
+				if (entity.trySetFuelType(tokenOf.i)) {
+					entity.addFuel(500);
+					heldItem.shrink(1);
+					return InteractionResult.SUCCESS;
+				}
 			}
 		}
 
@@ -89,6 +91,7 @@ public abstract class BaseSpireDevice extends BaseBlock implements BlockHasRende
 	}
 
 	public static void clientTick(Level level, BlockPos blockpos, BlockState bs, BeSpireDevice be) {
+
 		if (bs.getBlock() instanceof BaseSpireDevice device) {
 			if (device.tickDeviceClient(level, blockpos, bs, be))
 				return;
@@ -120,6 +123,7 @@ public abstract class BaseSpireDevice extends BaseBlock implements BlockHasRende
 	}
 
 	public static void serverTick(Level _level, BlockPos blockpos, BlockState bs, BeSpireDevice be) {
+
 		if (_level instanceof ServerLevel level && bs.getBlock() instanceof BaseSpireDevice device) {
 			if (device.tickDeviceServer(level, blockpos, bs, be))
 				return;
@@ -137,11 +141,14 @@ public abstract class BaseSpireDevice extends BaseBlock implements BlockHasRende
 						iterator.remove();
 						continue;
 					}
+//					System.out.println(myFuelType + " " + entitySpire.hasName(myFuelType));
 					if (myFuelType >= 0 && !entitySpire.hasName(myFuelType)) {
 						iterator.remove();
 						continue;
 					}
 				}
+
+//				System.out.println(spires);
 				if (!spires.isEmpty()) {
 					Collections.sort(spires, (s1, s2) -> (int) (s1.position().subtract(pos).length() - s2.position().subtract(pos).length()));
 					EntitySpire spire = spires.get(0);
@@ -178,7 +185,7 @@ public abstract class BaseSpireDevice extends BaseBlock implements BlockHasRende
 								2, 0, 0, 0, 0);
 
 						level.addParticle(null, false, myFuelType, myFuelType, myFuelType, color, extractValue, myFuelType);
-						be.tryAddFuel(extractValue);
+						be.addFuel(extractValue);
 					}
 				}
 			}

@@ -2,12 +2,11 @@ package wolforce.hearthwell.blocks.tiles;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import wolforce.hearthwell.bases.BlockEntityParent;
 import wolforce.hearthwell.registries.TileEntities;
 
-public class BeSpireDevice extends BlockEntity {
+public class BeSpireDevice extends BlockEntityParent {
 
 	private int fuel = 0;
 	private int fuelType = -1;
@@ -30,63 +29,60 @@ public class BeSpireDevice extends BlockEntity {
 	}
 
 	public int getFuelType() {
-		if (fuel <= 0)
-			return -1;
 		return fuelType;
 	}
 
-	public boolean tryAddFuel(int v) {
-		int fuel = getFuel();
-		// v may be negative
-		// in which case we need to check if has enough fuel to extract
-		if (v > 0 || (fuel > 1 && v < 0 && fuel >= v)) {
-			this.fuel += v;
-			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+	public boolean tryRemoveFuel(int v) {
+		if (fuel >= v) {
+			fuel -= v;
 			return true;
 		}
 		return false;
 	}
 
+	public int removeFuelUpTo(int i) {
+		if (fuel <= 0)
+			return 0;
+		fuel -= i;
+		if (fuel < 0) {
+			int removed = i + fuel;
+			fuel = 0;
+			return removed;
+		}
+		return i;
+	}
+
+	public void addFuel(int v) {
+		this.fuel += v;
+		level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+	}
+
 	//
 
+	// @Override
+//	public void writePacketNBT(CompoundTag nbt) {
+//		nbt.put("inventory", this.inv.serializeNBT());
+//		nbt.putFloat("chaos", this.chaos);
+//	}
+//
+//	@Override
+//	public void readPacketNBT(CompoundTag nbt) {
+//		this.inv.deserializeNBT(nbt.getCompound("inventory"));
+//		this.chaos = nbt.getFloat("chaos");
+//	}
+
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
+	public void writePacketNBT(CompoundTag tag) {
 		tag.putInt("fuel", fuel);
 		tag.putInt("fuelType", fuelType);
 		tag.put("extraInfo", extraInfo);
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	public void readPacketNBT(CompoundTag tag) {
 		fuel = tag.getInt("fuel");
 		fuelType = tag.getInt("fuelType");
 		extraInfo = tag.getCompound("extraInfo");
 	}
-
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
-		saveAdditional(tag);
-		return tag;
-	}
-
-	@Override
-	public void handleUpdateTag(CompoundTag tag) {
-		super.handleUpdateTag(tag);
-		load(tag);
-	}
-
-	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	// TODO is this necessary?
-	// @Override
-	// public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket
-	// pkt) {
-	// super.onDataPacket(net, pkt);
-	// }
 
 }

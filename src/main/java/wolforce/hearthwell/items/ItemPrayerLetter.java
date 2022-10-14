@@ -1,13 +1,19 @@
 package wolforce.hearthwell.items;
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import wolforce.hearthwell.entities.EntityHearthWell;
 import wolforce.hearthwell.particles.ParticleEnergyData;
@@ -16,6 +22,12 @@ public class ItemPrayerLetter extends Item {
 
 	public ItemPrayerLetter(Properties properties) {
 		super(properties);
+	}
+
+	@Override
+	public void appendHoverText(ItemStack p_41421_, Level p_41422_, List<Component> comps, TooltipFlag p_41424_) {
+		super.appendHoverText(p_41421_, p_41422_, comps, p_41424_);
+		comps.add(new TextComponent("Throw me!").setStyle(Style.EMPTY.withColor(0x888888)));
 	}
 
 	@Override

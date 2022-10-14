@@ -5,42 +5,56 @@ import java.util.List;
 
 import net.minecraft.world.item.ItemStack;
 import wolforce.hearthwell.HearthWell;
+import wolforce.hearthwell.data.MapData;
 import wolforce.hearthwell.data.RecipeHearthWell;
 import wolforce.utils.Util;
 
 public class RecipeFlare extends RecipeHearthWell {
 
-	private static final long serialVersionUID = HearthWell.VERSION.hashCode();
+	private static final long serialVersionUID = HearthWell.NETDATA_VERSION.hashCode();
+	public static final int WIDTH = 134, HEIGHT = 82;
 
-//	private final String[] inputs;
 	public final String color_string;
 	public final String flare_name;
-	public final int uses;
+	public final int initial_uses;
 
 	private transient int color;
 	public transient String flareType;
-//	private transient Object[] realInputs;
+
+	@Override
+	public void postInitRecipe(MapData data) {
+		color = Integer.parseInt(color_string, 16) + 0xFF000000;
+		flareType = recipeId;
+	}
 
 	public RecipeFlare(String recipeId, String flareName, String colorString, String input) {
 		this(recipeId, flareName, colorString, 1, input);
 	}
 
-	public static final int WIDTH = 134, HEIGHT = 82;
-
 	public RecipeFlare(String recipeId, String flareName, String colorString, int uses, String input) {
-		super("flare2", recipeId, WIDTH, HEIGHT, input, "");
-		this.flareType = recipeId;
+		super(recipeId, input, "");
 		this.flare_name = flareName;
 		this.color_string = colorString;
-		this.uses = uses;
-//		this.inputs = inputs;
-//		color = 0xFFFFFFFF;
-//		Integer.decode("0x" + color_string + "FF");
-		color = Integer.parseInt(color_string, 16);
+		this.initial_uses = uses;
+	}
+
+	@Override
+	public String getTypeString() {
+		return "flare2";
+	}
+
+	@Override
+	public int getWidth() {
+		return WIDTH;
+	}
+
+	@Override
+	public int getHeight() {
+		return HEIGHT;
 	}
 
 	public int getColor() {
-		return color + 0xFF000000;
+		return color;
 	}
 
 	public boolean matchesAllInputs(List<ItemStack> _available) {

@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.Set;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -33,16 +32,17 @@ import wolforce.hearthwell.blocks.BlockCrushingBlock;
 import wolforce.hearthwell.blocks.BlockCrystalOre;
 import wolforce.hearthwell.blocks.BlockFertileSoil;
 import wolforce.hearthwell.blocks.BlockMystBush;
-import wolforce.hearthwell.blocks.BlockMystContainer;
 import wolforce.hearthwell.blocks.BlockMystGrass;
 import wolforce.hearthwell.blocks.BlockPetrifiedWood;
 import wolforce.hearthwell.blocks.BlockSpire;
 import wolforce.hearthwell.blocks.BlockSpireDeviceCombiner;
 import wolforce.hearthwell.blocks.BlockSpireDeviceCoreInfuser;
 import wolforce.hearthwell.blocks.BlockSpireDeviceReactor;
+import wolforce.hearthwell.items.ItemMystContainer;
 import wolforce.hearthwell.items.ItemPetrifiedWoodDust;
 import wolforce.hearthwell.items.ItemPrayerLetter;
 import wolforce.hearthwell.items.ItemTokenBase;
+import wolforce.hearthwell.items.ItemTokenChalk;
 import wolforce.hearthwell.items.ItemTokenOf;
 import wolforce.hearthwell.registries.Entities;
 import wolforce.hearthwell.registries.TileEntities;
@@ -51,13 +51,13 @@ import wolforce.hearthwell.registries.TileEntities;
 public class HearthWell {
 
 	public static final String MODID = "hearthwell";
-	public static final String VERSION = "0.1";
+	public static final String NETDATA_VERSION = "1";
 
 	public HearthWell() {
 		ConfigServer.init();
 		ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ConfigServer.CONFIG_SPEC, MODID + "_server.toml");
 		IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-//		modBus.addListener(Client::setupCompleteClient);
+//		modBus.addListener(this::setupCompleteClient);
 //		modBus.addListener(this::setupCompleteServer);
 		MinecraftForge.EVENT_BUS.register(this);
 		TileEntities.REGISTRY.register(modBus);
@@ -95,7 +95,7 @@ public class HearthWell {
 	public static Block myst_bush, myst_bush_small, burst_seed;
 	public static Block crushing_block;
 	public static Block spire;
-	public static BlockMystContainer myst_container;
+//	public static BlockMystContainer myst_container;
 	public static BaseSpireDevice spire_device_core_turning, spire_device_combiner, spire_device_reactor;
 
 	public static Set<Block> getSpireDevices() {
@@ -114,67 +114,62 @@ public class HearthWell {
 //	};
 
 	public static void setupBlocks() {
-		Block.Properties organic = Block.Properties.of(Material.GRASS, MaterialColor.COLOR_PURPLE)//
-				.strength(1).sound(SoundType.GRASS);
 //		Block.Properties plants = Block.Properties.create(Material.PLANTS, MaterialColor.PURPLE);
-		Block.Properties sand = Block.Properties.of(Material.SAND, MaterialColor.COLOR_PURPLE)//
-				.strength(.7f).sound(SoundType.SAND);
-		Block.Properties rock = Block.Properties.of(Material.STONE, MaterialColor.COLOR_GRAY)//
-				.strength(1);
-//		Block.Properties glass = Block.Properties.of(Material.GLASS, MaterialColor.COLOR_GRAY)//
-//				.strength(.3f);
-		Block.Properties amethyst = Block.Properties.of(Material.AMETHYST, MaterialColor.COLOR_GRAY)//
-				.strength(.3f);
-		Block.Properties clay = Block.Properties.of(Material.CLAY, MaterialColor.COLOR_GRAY)//
-				.strength(.6f);
-		Block.Properties grass = Block.Properties.of(Material.GRASS, MaterialColor.COLOR_GRAY)//
-				.strength(.5f);
-		Block.Properties egg = Block.Properties.of(Material.EGG, MaterialColor.COLOR_GRAY)//
-				.strength(.5f);
-		Block.Properties sculk = Block.Properties.of(Material.SCULK, MaterialColor.COLOR_GRAY)//
-				.strength(.5f);
-		Block.Properties cactus = Block.Properties.of(Material.CACTUS, MaterialColor.COLOR_GRAY)//
-				.strength(.5f);
-		Block.Properties rockNoToolNeeded = Block.Properties.of(Material.STONE, MaterialColor.COLOR_GRAY)//
-				.strength(.8f);
-//		Block.Properties torch = AbstractBlock.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().zeroHardnessAndResistance()
-//				.setLightLevel((state) -> 14).sound(SoundType.WOOD);
-		Block.Properties plantNoDrops = Properties.of(Material.PLANT, MaterialColor.COLOR_PURPLE).noCollission().instabreak().sound(SoundType.GRASS).noDrops();
+		Block.Properties grass = Block.Properties.of(Material.GRASS, MaterialColor.COLOR_GREEN).sound(SoundType.GRASS).strength(.8f);
+		Block.Properties grass_purple = Block.Properties.of(Material.GRASS, MaterialColor.COLOR_PURPLE).sound(SoundType.GRASS).strength(.8f);
+		Block.Properties grass_bush = Block.Properties.of(Material.REPLACEABLE_PLANT, MaterialColor.COLOR_PURPLE).noCollission().instabreak().sound(SoundType.GRASS).dynamicShape();
+		Block.Properties sand = Block.Properties.of(Material.SAND, MaterialColor.COLOR_PURPLE).strength(.8f);
+		Block.Properties stoneSofter = Block.Properties.of(Material.STONE, MaterialColor.COLOR_GRAY).strength(1.1f).requiresCorrectToolForDrops();
+		Block.Properties stoneHarder = Block.Properties.of(Material.STONE, MaterialColor.COLOR_GRAY).strength(1.6f).requiresCorrectToolForDrops();
+		Block.Properties stone_noPickaxeRequired = Block.Properties.of(Material.STONE, MaterialColor.COLOR_GRAY).strength(1.1f);
+		Block.Properties amethyst = Block.Properties.of(Material.AMETHYST, MaterialColor.COLOR_PURPLE).strength(.8f);
+		Block.Properties clay = Block.Properties.of(Material.CLAY, MaterialColor.COLOR_GRAY).strength(.6f);
+		Block.Properties egg = Block.Properties.of(Material.EGG, MaterialColor.COLOR_GRAY).strength(.5f);
+		Block.Properties sculk = Block.Properties.of(Material.SCULK, MaterialColor.COLOR_GRAY).strength(.5f);
+		Block.Properties cactus = Block.Properties.of(Material.CACTUS, MaterialColor.COLOR_GRAY).strength(.5f);
 		Block.Properties miscellaneous = Properties.of(Material.DECORATION, MaterialColor.NONE).strength(.3f).sound(SoundType.BONE_BLOCK);
 
-		myst_grass = addBlock("myst_grass", new BlockMystGrass(organic));
-		petrified_wood = addBlock("petrified_wood", new BlockPetrifiedWood(rockNoToolNeeded));
+		myst_grass = addBlock("myst_grass", new BlockMystGrass(grass_purple));
+		petrified_wood = addBlock("petrified_wood", new BlockPetrifiedWood(stone_noPickaxeRequired));
 		myst_dust_block = addBlock("myst_dust_block", new BaseFallingBlock(sand));
 		inert_dust_block = addBlock("inert_dust_block", new BaseFallingBlock(sand));
-		myst_bush = addBlock("myst_bush", new BlockMystBush(true, plantNoDrops), "");
-		myst_bush_small = addBlock("myst_bush_small", new BlockMystBush(false, plantNoDrops), "");
-		crystal_ore = addBlock("crystal_ore", new BlockCrystalOre(rock, false));
-		crystal_ore_black = addBlock("crystal_ore_black", new BlockCrystalOre(rock, true));
-		crushing_block = addBlock("crushing_block", new BlockCrushingBlock(rockNoToolNeeded));
+		myst_bush = addBlock("myst_bush", new BlockMystBush(true, grass_bush), "");
+		myst_bush_small = addBlock("myst_bush_small", new BlockMystBush(false, grass_bush), "");
+		crystal_ore = addBlock("crystal_ore", new BlockCrystalOre(stoneHarder, false));
+		crystal_ore_black = addBlock("crystal_ore_black", new BlockCrystalOre(stoneHarder, true));
+		crushing_block = addBlock("crushing_block", new BlockCrushingBlock(stone_noPickaxeRequired));
 
-		addBlock("core_anima_activated", new BlockCore(egg, addBlock("core_anima", new BlockCore(egg))));
-		addBlock("core_crystal_activated", new BlockCore(amethyst, addBlock("core_crystal", new BlockCore(amethyst))));
-		addBlock("core_heat_activated", new BlockCore(cactus, addBlock("core_heat", new BlockCore(cactus))));
-		addBlock("core_rock_activated", new BlockCore(rock, addBlock("core_rock", new BlockCore(rock))));
-		addBlock("core_rotten_activated", new BlockCore(sculk, addBlock("core_rotten", new BlockCore(sculk))));
-		addBlock("core_soft_activated", new BlockCore(clay, addBlock("core_soft", new BlockCore(clay))));
-		addBlock("core_verdant_activated", new BlockCore(grass, addBlock("core_verdant", new BlockCore(grass))));
+		addBlock("core_anima", new BlockCore(egg));
+		addBlock("core_crystal", new BlockCore(amethyst));
+		addBlock("core_heat", new BlockCore(cactus));
+		addBlock("core_rock", new BlockCore(stoneSofter));
+		addBlock("core_rotten", new BlockCore(sculk));
+		addBlock("core_soft", new BlockCore(clay));
+		addBlock("core_verdant", new BlockCore(grass));
 
-		spire = addBlock("spire", new BlockSpire(rockNoToolNeeded));
-		myst_container = addBlock("myst_container", new BlockMystContainer(rockNoToolNeeded));
+		addBlock("core_anima_activated", new BlockCore(egg));
+		addBlock("core_crystal_activated", new BlockCore(amethyst));
+		addBlock("core_heat_activated", new BlockCore(cactus));
+		addBlock("core_rock_activated", new BlockCore(stone_noPickaxeRequired));
+		addBlock("core_rotten_activated", new BlockCore(sculk));
+		addBlock("core_soft_activated", new BlockCore(clay));
+		addBlock("core_verdant_activated", new BlockCore(grass));
 
-		spire_device_core_turning = addBlock("spire_device_core_turning", new BlockSpireDeviceCoreInfuser(rockNoToolNeeded));
-		spire_device_combiner = addBlock("spire_device_combiner", new BlockSpireDeviceCombiner(rockNoToolNeeded));
-		spire_device_reactor = addBlock("spire_device_reactor", new BlockSpireDeviceReactor(rockNoToolNeeded));
+		spire = addBlock("spire", new BlockSpire(stone_noPickaxeRequired));
+//		myst_container = addBlock("myst_container", new BlockMystContainer(stone_noPickaxeRequired));
+
+		spire_device_core_turning = addBlock("spire_device_core_turning", new BlockSpireDeviceCoreInfuser(stone_noPickaxeRequired));
+		spire_device_combiner = addBlock("spire_device_combiner", new BlockSpireDeviceCombiner(stone_noPickaxeRequired));
+		spire_device_reactor = addBlock("spire_device_reactor", new BlockSpireDeviceReactor(stone_noPickaxeRequired));
 
 //		myst_light = addBlock("myst_light", new BlockMystLight(torch));
 
 		// HAVE TILE REGISTRY
 		burst_seed = addBlock("burst_seed", new BlockBurstSeed(miscellaneous));
-		fertile_soil = addBlock("fertile_soil", new BlockFertileSoil(organic));
+		fertile_soil = addBlock("fertile_soil", new BlockFertileSoil(grass_purple));
 	}
 
-	public static Item myst_dust, petrified_wood_chunk, petrified_wood_dust, crystal, flare_torch, prayer_letter, token_base;
+	public static Item myst_dust, petrified_wood_chunk, petrified_wood_dust, crystal, flare_torch, prayer_letter, token_base, myst_container;
 	public static final HashMap<Item, String> descriptions = new HashMap<>();
 
 	private static final ArrayList<ItemTokenOf> tokenItems = new ArrayList<>(TokenNames.NUMBER_OF_TOKENS);
@@ -211,6 +206,9 @@ public class HearthWell {
 		flare_torch = addItem("flare_torch", props, "");
 
 		prayer_letter = addItem("prayer_letter", new ItemPrayerLetter(propsNoStack), "");
+		addItem("token_chalk", new ItemTokenChalk(propsNoStack));
+		myst_container = addItem("myst_container", new ItemMystContainer(propsNoStack));
+
 	}
 
 	//
@@ -244,8 +242,12 @@ public class HearthWell {
 	private static <T extends Block> T addBlock(String regId, T block, String jeiDescription) {
 		block.setRegistryName(new ResourceLocation(MODID, regId));
 		blocks.put(regId, block);
-		if (block instanceof BlockItemProperties)
-			addItem(regId, new BlockItem(block, ((BlockItemProperties) block).getItemProperties()), jeiDescription);
+
+		if (block instanceof BlockItemProperties myblock) {
+			Item blockItem = myblock.getItem(block);
+			if (blockItem != null)
+				addItem(regId, blockItem, jeiDescription);
+		}
 		return block;
 	}
 

@@ -25,7 +25,7 @@ public class BlockCrystalOre extends BaseBlock implements BlockHasRenderLayer.Tr
 		List<ItemStack> drops = new ArrayList<>();
 		drops.add(new ItemStack(HearthWell.crystal, Math.random() < 0.25 ? 2 : 1));
 		if (isBlack)
-			drops.add(new ItemStack(HearthWell.petrified_wood_chunk, 2 + (int) (Math.random() * 3)));
+			drops.add(new ItemStack(HearthWell.petrified_wood_chunk, (int) (Math.random() * 3)));
 		else
 			drops.add(new ItemStack(Blocks.COBBLESTONE, 1));
 		return drops;
